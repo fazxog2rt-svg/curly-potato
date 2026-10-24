@@ -117,3 +117,57 @@ app.include_router(app_settings.router, prefix=settings.API_V1_STR)
 app.include_router(knowledge_graph.router, prefix=settings.API_V1_STR)
 app.include_router(cat_exam.router, prefix=settings.API_V1_STR)
 app.include_router(agent_copilot.router, prefix=settings.API_V1_STR)
+
+# ----------------------------------------------------------------------
+# Mount and Serve Unified Next.js Frontend (Single-Host Deployment)
+# ----------------------------------------------------------------------
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+# Check possible locations for exported Next.js frontend
+possible_paths = [
+    os.getenv("FRONTEND_DIST"),
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend/out")),
+    os.path.abspath(os.path.join(os.getcwd(), "frontend/out")),
+    os.path.abspath(os.path.join(os.getcwd(), "out")),
+]
+
+frontend_dist = next((p for p in possible_paths if p and os.path.exists(p)), None)
+
+if frontend_dist and os.path.exists(frontend_dist):
+    # Mount _next static folder (chunks, css, images)
+    _next_dist = os.path.join(frontend_dist, "_next")
+    if os.path.exists(_next_dist):
+        app.mount("/_next", StaticFiles(directory=_next_dist), name="next_static")
+
+    @app.get("/{full_path:path}")
+    async def serve_frontend_spa(full_path: str):
+        # Exclude API endpoints, Swagger, and OpenAPI schema
+        if (
+            full_path.startswith("api")
+            or full_path.startswith("docs")
+            or full_path.startswith("redoc")
+            or full_path.startswith("openapi.json")
+        ):
+            return JSONResponse(status_code=404, content={"detail": "Not Found"})
+
+        # Check for direct file match (e.g. favicon.ico, file.svg)
+        direct_file = os.path.join(frontend_dist, full_path)
+        if full_path and os.path.isfile(direct_file):
+            return FileResponse(direct_file)
+
+        # Check for page.html match (e.g. /tutor -> tutor.html)
+        html_file = os.path.join(frontend_dist, f"{full_path}.html")
+        if full_path and os.path.isfile(html_file):
+            return FileResponse(html_file)
+
+        # Fallback to index.html (Dashboard SPA root)
+        index_html = os.path.join(frontend_dist, "index.html")
+        if os.path.isfile(index_html):
+            return FileResponse(index_html)
+
+        return JSONResponse(
+            status_code=404,
+            content={"detail": "Frontend page not found in build directory"},
+        )
