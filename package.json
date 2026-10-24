@@ -1,0 +1,12 @@
+{
+  "name": "ai-study-companion",
+  "version": "1.0.0",
+  "description": "AI Study Companion Full-Stack Application",
+  "scripts": {
+    "dev": "powershell -ExecutionPolicy Bypass -File ./start.ps1",
+    "start": "powershell -ExecutionPolicy Bypass -File ./start.ps1",
+    "backend": "powershell -ExecutionPolicy Bypass -File ./start_backend.ps1",
+    "frontend": "powershell -ExecutionPolicy Bypass -File ./start_frontend.ps1",
+    "test": "cd backend && venv\\Scripts\\python -m pytest tests -v"
+  }
+}

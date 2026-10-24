@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+backend/venv/
+backend/__pycache__/
+*.pyc
+
+# Production Builds
+frontend/.next/
+frontend/out/
+dist/
+build/
+
+# Database & Environment variables
+*.db
+*.sqlite3
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs & IDE
+*.log
+npm-debug.log*
+.vscode/
+.idea/
+.DS_Store
