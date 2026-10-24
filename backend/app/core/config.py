@@ -39,6 +39,19 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
     ]
 
+    @field_validator("DATABASE_URL", mode="before")
+    def assemble_database_url(cls, v: str) -> str:
+        # In Vercel serverless environment, only /tmp is writable
+        if os.getenv("VERCEL") == "1" and ("sqlite" in str(v) or not v):
+            return "sqlite:////tmp/study_companion.db"
+        return v or "sqlite:///./study_companion.db"
+
+    @field_validator("STORAGE_LOCAL_DIR", mode="before")
+    def assemble_storage_dir(cls, v: str) -> str:
+        if os.getenv("VERCEL") == "1":
+            return "/tmp/uploads"
+        return v or "./uploads"
+
     @field_validator("CORS_ORIGINS", mode="before")
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
         if isinstance(v, str):
