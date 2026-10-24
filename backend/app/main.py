@@ -92,6 +92,7 @@ async def generic_exception_handler(request: Request, exc: Exception):
 
 # Health Check
 @app.get("/health", tags=["System"])
+@app.get("/api/health", tags=["System"])
 def health_check():
     """Health check endpoint without leaking secrets."""
     return {

@@ -1,8 +1,10 @@
 const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ||
-  (typeof window !== "undefined"
-    ? "/api"
-    : "http://127.0.0.1:8000/api");
+  (typeof window === "undefined" && process.env.BACKEND_URL)
+    ? `${process.env.BACKEND_URL.replace(/\/+$/, "")}/api`
+    : (process.env.NEXT_PUBLIC_API_URL ||
+      (typeof window !== "undefined"
+        ? "/api"
+        : "http://127.0.0.1:8000/api"));
 
 export class ApiError extends Error {
   status: number;
