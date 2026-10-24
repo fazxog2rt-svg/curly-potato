@@ -46,14 +46,14 @@ export default function SettingsPage() {
 
   const loadSettingsData = async () => {
     try {
-      const [profData, settsData, memsData] = await Promise.all([
+      const [profData, settsData, memsData] = await Promise.allSettled([
         api.auth.me(),
         api.settings.get(),
         api.memory.list(),
       ]);
-      setProfile(profData);
-      setSysSettings(settsData);
-      if (Array.isArray(memsData)) setMemories(memsData);
+      if (profData.status === "fulfilled") setProfile(profData.value);
+      if (settsData.status === "fulfilled") setSysSettings(settsData.value);
+      if (memsData.status === "fulfilled" && Array.isArray(memsData.value)) setMemories(memsData.value);
     } catch (e) {
       console.error("Error loading settings:", e);
     } finally {
