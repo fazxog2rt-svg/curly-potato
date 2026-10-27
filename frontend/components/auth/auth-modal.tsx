@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
+import { loginWithGoogleFirebase, isFirebaseConfigured } from "@/lib/firebase";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -80,22 +81,37 @@ export function AuthModal({
     setError(null);
     setLoading(true);
     try {
-      // Fast 1-click Google OAuth authentication
-      // In production, Google Client ID token is passed here
-      const res = await api.auth.googleAuth({
-        email: email || "pelajar.google@studycompanion.id",
-        full_name: fullName || "Pelajar Teladan",
-      });
+      if (isFirebaseConfigured) {
+        // Real Google Login with Firebase Popup
+        const res = await loginWithGoogleFirebase();
+        if (res?.access_token) {
+          if (onSuccess) onSuccess();
+          else window.location.href = "/dashboard";
+          onClose();
+        }
+      } else {
+        // Seamless fallback if NEXT_PUBLIC_FIREBASE_API_KEY is not yet in .env
+        const res = await api.auth.googleAuth({
+          email: email || "pelajar.google@studycompanion.id",
+          full_name: fullName || "Pelajar Teladan Google",
+        });
 
-      if (res?.access_token) {
-        localStorage.setItem("study_token", res.access_token);
-        localStorage.setItem("study_user", JSON.stringify(res.user));
-        if (onSuccess) onSuccess();
-        else window.location.href = "/dashboard";
-        onClose();
+        if (res?.access_token) {
+          localStorage.setItem("study_token", res.access_token);
+          localStorage.setItem("study_user", JSON.stringify(res.user));
+          if (onSuccess) onSuccess();
+          else window.location.href = "/dashboard";
+          onClose();
+        }
       }
     } catch (err: any) {
-      setError(err?.message || "Gagal masuk dengan Google.");
+      if (err?.code === "auth/popup-closed-by-user") {
+        setError("Jendela login Google ditutup.");
+      } else if (err?.code === "auth/unauthorized-domain") {
+        setError("Domain ini belum terdaftar di Firebase Console (Authorized Domains).");
+      } else {
+        setError(err?.message || "Gagal masuk dengan Google.");
+      }
     } finally {
       setLoading(false);
     }

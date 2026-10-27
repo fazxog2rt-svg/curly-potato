@@ -12,6 +12,7 @@
     "@hookform/resolvers": "^6.0.0",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
+    "firebase": "^13.1.0",
     "katex": "^0.19.1",
     "lucide-react": "^1.61.0",
     "mermaid": "^12.2.0",

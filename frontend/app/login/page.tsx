@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Sparkles, Mail, Lock, User, ArrowRight, AlertCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
+import { loginWithGoogleFirebase, isFirebaseConfigured } from "@/lib/firebase";
 
 export default function LoginPage() {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -55,18 +56,32 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const res = await api.auth.googleAuth({
-        email: email || "pelajar.google@studycompanion.id",
-        full_name: fullName || "Pelajar Teladan",
-      });
+      if (isFirebaseConfigured) {
+        // Real Google Login with Firebase Popup
+        const res = await loginWithGoogleFirebase();
+        if (res?.access_token) {
+          window.location.href = "/dashboard";
+        }
+      } else {
+        const res = await api.auth.googleAuth({
+          email: email || "pelajar.google@studycompanion.id",
+          full_name: fullName || "Pelajar Teladan Google",
+        });
 
-      if (res?.access_token) {
-        localStorage.setItem("study_token", res.access_token);
-        localStorage.setItem("study_user", JSON.stringify(res.user));
-        window.location.href = "/dashboard";
+        if (res?.access_token) {
+          localStorage.setItem("study_token", res.access_token);
+          localStorage.setItem("study_user", JSON.stringify(res.user));
+          window.location.href = "/dashboard";
+        }
       }
     } catch (err: any) {
-      setError(err?.message || "Gagal masuk dengan Google.");
+      if (err?.code === "auth/popup-closed-by-user") {
+        setError("Jendela login Google ditutup.");
+      } else if (err?.code === "auth/unauthorized-domain") {
+        setError("Domain ini belum terdaftar di Firebase Console (Authorized Domains).");
+      } else {
+        setError(err?.message || "Gagal masuk dengan Google.");
+      }
     } finally {
       setLoading(false);
     }
