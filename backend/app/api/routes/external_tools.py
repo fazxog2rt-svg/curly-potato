@@ -463,7 +463,7 @@ Aturan Obrolan (PENTING - HINDARI KESAN ROBOTIK/AI):
 
     user_content = f"Topik Pelajaran: {req.topic}"
     if req.source_text and req.source_text.strip():
-        user_content += f"\n\nRujukan Materi Belajar:\n{req.source_text[:2500]}"
+        user_content += f"\n\nRujukan Materi Belajar:\n{req.source_text[:30000]}"
 
     headers = {
         "Authorization": f"Bearer {settings.GUTS_API_KEY}",

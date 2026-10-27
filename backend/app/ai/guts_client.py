@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 # Prioritized verified models that are currently active and functioning
 PRIORITY_MODELS = [
+    "minimax-m3.1-flash",
     "gemini-3.8-flash",
     "gpt-5.6-luna",
     "gpt-6-luna",
@@ -18,6 +19,7 @@ PRIORITY_MODELS = [
 
 # Fallback verified models in case network is down or API key not yet set
 FALLBACK_MODELS = [
+    {"id": "minimax-m3.1-flash", "name": "MiniMax 3.1 Flash (MiniMax - Percakapan Luwes & 1M Konteks)", "provider": "MiniMax", "status": "active"},
     {"id": "gemini-3.8-flash", "name": "Gemini 3.8 Flash (Google - Cepat & Aktif)", "provider": "Google", "status": "active"},
     {"id": "gpt-5.6-luna", "name": "GPT 5.6 Luna (OpenAI - Stabil & Aktif)", "provider": "OpenAI", "status": "active"},
     {"id": "gpt-6-luna", "name": "GPT 6 Luna (OpenAI - Unggulan)", "provider": "OpenAI", "status": "active"},

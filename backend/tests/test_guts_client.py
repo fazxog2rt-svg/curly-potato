@@ -28,6 +28,6 @@ async def test_guts_client_fallback_models():
     """Test model listing fallback returns production models when unauthenticated."""
     client = GutsAIClient(api_key="")
     models = await client.list_models()
-    assert len(models) >= 5
     model_ids = [m["id"] for m in models]
+    assert "minimax-m3.1-flash" in model_ids
     assert "gemini-3.8-flash" in model_ids

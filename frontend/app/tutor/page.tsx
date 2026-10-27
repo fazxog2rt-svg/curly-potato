@@ -52,7 +52,7 @@ export default function TutorPage() {
 
   // Settings & Context
   const [models, setModels] = useState<ModelInfo[]>([]);
-  const [selectedModel, setSelectedModel] = useState("gemini-3.8-flash");
+  const [selectedModel, setSelectedModel] = useState("minimax-m3.1-flash");
   const [explanationStyle, setExplanationStyle] = useState("step_by_step");
   const [difficulty, setDifficulty] = useState("intermediate");
   const [materials, setMaterials] = useState<LearningMaterialItem[]>([]);
@@ -82,6 +82,7 @@ export default function TutorPage() {
         if (Array.isArray(mods) && mods.length > 0) {
           setModels(mods);
           const preferred =
+            mods.find((m) => m.id === "minimax-m3.1-flash" && m.status !== "offline") ||
             mods.find((m) => m.id === "gemini-3.8-flash" && m.status !== "offline") ||
             mods.find((m) => m.id === "gpt-5.6-luna" && m.status !== "offline") ||
             mods.find((m) => m.status !== "offline") ||

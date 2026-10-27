@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     # Official endpoint: https://api.gutsai.id/v1
     GUTS_API_KEY: str = ""
     GUTSAI_BASE_URL: str = "https://api.gutsai.id/v1"
-    GUTSAI_DEFAULT_MODEL: str = "gemini-3.8-flash"
+    GUTSAI_DEFAULT_MODEL: str = "minimax-m3.1-flash"
     GUTSAI_TIMEOUT_SECONDS: int = 60
     GUTSAI_MAX_RETRIES: int = 2
 

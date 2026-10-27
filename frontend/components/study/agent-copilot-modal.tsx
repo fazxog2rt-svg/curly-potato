@@ -22,7 +22,7 @@ interface AgentCopilotModalProps {
   model?: string;
 }
 
-export function AgentCopilotModal({ isOpen, onClose, model = "gemini-3.8-flash" }: AgentCopilotModalProps) {
+export function AgentCopilotModal({ isOpen, onClose, model = "minimax-m3.1-flash" }: AgentCopilotModalProps) {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [missionResult, setMissionResult] = useState<any>(null);

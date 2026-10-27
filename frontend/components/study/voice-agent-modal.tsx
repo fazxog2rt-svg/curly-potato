@@ -39,7 +39,7 @@ export function VoiceAgentModal({
   isOpen,
   onClose,
   topic = "Diskusi Pembelajaran",
-  model = "gemini-3.8-flash",
+  model = "minimax-m3.1-flash",
 }: VoiceAgentModalProps) {
   const [agentState, setAgentState] = useState<AgentState>("IDLE");
   const [messages, setMessages] = useState<VoiceMessage[]>([]);
