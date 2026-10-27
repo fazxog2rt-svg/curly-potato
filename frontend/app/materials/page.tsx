@@ -22,11 +22,13 @@ import {
   Send,
   Share2,
   Video,
+  Headphones,
 } from "lucide-react";
 import { AudioPlayerButton } from "@/components/study/audio-player-button";
 import { MindMapModal } from "@/components/study/mindmap-modal";
 import { CheatSheetModal } from "@/components/study/cheatsheet-modal";
 import { YouTubeAnalyzerModal } from "@/components/study/youtube-analyzer-modal";
+import { PodcastModal } from "@/components/study/podcast-modal";
 import { api } from "@/lib/api";
 import { LearningMaterialItem } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
@@ -62,6 +64,9 @@ export default function MaterialsPage() {
   const [mindmapOpen, setMindmapOpen] = useState(false);
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false);
   const [youtubeModalOpen, setYoutubeModalOpen] = useState(false);
+  const [podcastModalOpen, setPodcastModalOpen] = useState(false);
+  const [podcastTopic, setPodcastTopic] = useState("");
+  const [podcastSource, setPodcastSource] = useState("");
   const [modalSeed, setModalSeed] = useState("");
   const [modalTitle, setModalTitle] = useState("");
 
@@ -205,6 +210,18 @@ export default function MaterialsPage() {
             <p className="text-xs text-slate-500">Mendukung file PDF, DOCX, TXT, dan Markdown hingga 25 MB.</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setPodcastTopic("Topik Pembelajaran Bebas");
+                setPodcastSource("");
+                setPodcastModalOpen(true);
+              }}
+              className="gap-2 border-amber-300 text-amber-700 hover:bg-amber-50 dark:border-amber-900/60 dark:text-amber-400 dark:hover:bg-amber-950/40"
+            >
+              <Headphones className="h-4 w-4 text-amber-600" />
+              <span>AI Podcast Studio (2-Host)</span>
+            </Button>
             <Button
               variant="outline"
               onClick={() => setYoutubeModalOpen(true)}
@@ -424,6 +441,19 @@ export default function MaterialsPage() {
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={() => {
+                    setPodcastTopic(selectedMaterial?.title || "Materi Dokumen");
+                    setPodcastSource(`${summaryData.summary}\n\nKonsep Kunci:\n${summaryData.key_concepts}`);
+                    setPodcastModalOpen(true);
+                  }}
+                  className="gap-1.5 text-orange-600 dark:text-orange-400"
+                >
+                  <Headphones className="h-3.5 w-3.5" /> Podcast
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={async () => {
                     try {
                       await api.notes.create({
@@ -517,6 +547,14 @@ export default function MaterialsPage() {
       <YouTubeAnalyzerModal
         isOpen={youtubeModalOpen}
         onClose={() => setYoutubeModalOpen(false)}
+      />
+
+      {/* AI Podcast Studio Modal (NotebookLM Style 2-Host) */}
+      <PodcastModal
+        isOpen={podcastModalOpen}
+        onClose={() => setPodcastModalOpen(false)}
+        initialTopic={podcastTopic}
+        initialSourceText={podcastSource}
       />
     </AppLayout>
   );

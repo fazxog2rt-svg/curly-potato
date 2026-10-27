@@ -273,5 +273,10 @@ export const api = {
         method: "POST",
         body: JSON.stringify({ image_base64, prompt }),
       }),
+    generatePodcast: (topic: string, source_text = "", language = "id") =>
+      fetchWithAuth("/tools/podcast/generate", {
+        method: "POST",
+        body: JSON.stringify({ topic, source_text, language }),
+      }),
   },
 };

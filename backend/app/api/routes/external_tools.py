@@ -33,6 +33,11 @@ class VisionSolveRequest(BaseModel):
     image_base64: str
     prompt: Optional[str] = "Pecahkan soal ini langkah demi langkah dengan rumus matematis dan penjelasan konseptual yang jelas."
 
+class PodcastGenerateRequest(BaseModel):
+    topic: str
+    source_text: Optional[str] = ""
+    language: Optional[str] = "id"  # "id" or "en"
+
 
 # --- 1. Semantic Scholar Academic Paper Search API ---
 
@@ -411,3 +416,136 @@ async def solve_vision_problem(req: VisionSolveRequest, current_user: User = Dep
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Kesalahan analisis gambar: {str(e)}")
+
+
+# --- 6. AI Educational Podcast Generator (NotebookLM Style 2-Host) ---
+
+@router.post("/podcast/generate")
+async def generate_educational_podcast(req: PodcastGenerateRequest):
+    """
+    Generates a full 2-Host audio podcast (NotebookLM style) from topic or study materials.
+    Synthesizes conversational dialogue using GutsAI LLM and produces high-quality audio using Edge-TTS.
+    100% Free with zero API limits.
+    """
+    import base64
+    import json
+
+    if not req.topic.strip():
+        raise HTTPException(status_code=400, detail="Topik podcast wajib diisi.")
+
+    # 1. Generate multi-host script with LLM
+    system_prompt = """Kamu adalah produser podcast edukasi kelas dunia (mirip fitur Audio Overview pada Google NotebookLM).
+Tugasmu adalah menyusun naskah obrolan podcast antara 2 host:
+- Rian (Host Pria): Energik, ramah, kritis, sering bertanya hal praktis dan memakai perumpamaan kehidupan sehari-hari.
+- Siti (Host Wanita / Ekspert): Cerdas, santai, berwawasan luas, menjelaskan materi dengan runut, hangat, dan mudah dimengerti.
+
+Aturan naskah:
+- Jadikan percakapan mengalir santai (ada sambutan intro hangat, diskusi inti, dan kesimpulan singkat).
+- Gunakan bahasa Indonesia percakapan yang cerdas dan bersahabat (tidak kaku seperti membaca buku).
+- Jumlah giliran bicara: 6 sampai 8 giliran (masing-masing 2-3 kalimat padat).
+- Format respon HARUS berupa JSON murni tanpa markdown wrapper:
+{
+  "title": "Judul Episode Podcast Menarik",
+  "summary": "Ringkasan konsep utama dalam 1-2 kalimat.",
+  "dialogue": [
+    {
+      "speaker": "Rian",
+      "text": "Halo semuanya! Di episode kali ini kita bakal ngobrolin topik yang seru banget bareng Siti..."
+    },
+    {
+      "speaker": "Siti",
+      "text": "Halo Rian! Benar sekali, topik ini sering banget bikin penasaran..."
+    }
+  ]
+}"""
+
+    user_content = f"Topik Pelajaran: {req.topic}"
+    if req.source_text and req.source_text.strip():
+        user_content += f"\n\nRujukan Materi Belajar:\n{req.source_text[:2500]}"
+
+    headers = {
+        "Authorization": f"Bearer {settings.GUTS_API_KEY}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "model": settings.GUTSAI_DEFAULT_MODEL,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_content}
+        ],
+        "temperature": 0.5
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=35.0) as client:
+            resp = await client.post(f"{settings.GUTSAI_BASE_URL}/chat/completions", headers=headers, json=payload)
+            if resp.status_code != 200:
+                raise HTTPException(status_code=resp.status_code, detail="Gagal menyusun naskah podcast dengan AI.")
+            
+            raw_text = resp.json()["choices"][0]["message"]["content"].strip()
+            cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw_text, flags=re.MULTILINE).strip()
+            podcast_data = json.loads(cleaned)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Gagal memproses skrip podcast: {str(e)}")
+
+    dialogue = podcast_data.get("dialogue", [])
+    if not dialogue:
+        raise HTTPException(status_code=500, detail="Skrip podcast tidak menghasilkan dialog yang valid.")
+
+    # 2. Synthesize audio lines with Edge-TTS
+    # Rian: id-ID-ArdiNeural (or en-US-GuyNeural), Siti: id-ID-GadisNeural (or en-US-JennyNeural)
+    voice_map = {
+        "Rian": "id-ID-ArdiNeural" if req.language == "id" else "en-US-GuyNeural",
+        "Siti": "id-ID-GadisNeural" if req.language == "id" else "en-US-JennyNeural"
+    }
+
+    all_audio_bytes = bytearray()
+    enhanced_dialogue = []
+
+    try:
+        import edge_tts
+
+        for idx, turn in enumerate(dialogue):
+            speaker = turn.get("speaker", "Rian")
+            # Normalize speaker name
+            if "siti" in speaker.lower():
+                speaker = "Siti"
+            else:
+                speaker = "Rian"
+
+            voice = voice_map.get(speaker, "id-ID-ArdiNeural")
+            text = turn.get("text", "").strip()
+            if not text:
+                continue
+
+            # Communicate via edge-tts stream
+            comm = edge_tts.Communicate(text, voice)
+            line_bytes = bytearray()
+            async for chunk in comm.stream():
+                if chunk["type"] == "audio":
+                    line_bytes.extend(chunk["data"])
+
+            all_audio_bytes.extend(line_bytes)
+            enhanced_dialogue.append({
+                "id": idx + 1,
+                "speaker": speaker,
+                "text": text,
+                "voice": voice
+            })
+
+    except Exception as tts_err:
+        raise HTTPException(status_code=500, detail=f"Gagal melakukan sintesis suara podcast: {str(tts_err)}")
+
+    audio_base64 = base64.b64encode(all_audio_bytes).decode("utf-8")
+
+    return {
+        "title": podcast_data.get("title", f"Podcast: {req.topic}"),
+        "summary": podcast_data.get("summary", ""),
+        "dialogue": enhanced_dialogue,
+        "audio_data_url": f"data:audio/mp3;base64,{audio_base64}",
+        "hosts": [
+            {"name": "Rian", "role": "Host & Penanya", "gender": "male"},
+            {"name": "Siti", "role": "Ekspert & Narasumber", "gender": "female"}
+        ]
+    }
+

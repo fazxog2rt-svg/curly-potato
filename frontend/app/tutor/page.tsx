@@ -25,6 +25,7 @@ import {
   Share2,
   Camera,
   GraduationCap,
+  Headphones,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -37,6 +38,7 @@ import { AIMotivationCard } from "@/components/study/ai-motivation-card";
 import { CodeRunner } from "@/components/study/code-runner";
 import { SnapSolveModal } from "@/components/study/snap-solve-modal";
 import { AcademicPapersModal } from "@/components/study/academic-papers-modal";
+import { PodcastModal } from "@/components/study/podcast-modal";
 import { api } from "@/lib/api";
 import { ConversationItem, LearningMaterialItem, MessageItem, ModelInfo } from "@/lib/types";
 
@@ -67,6 +69,7 @@ export default function TutorPage() {
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false);
   const [snapModalOpen, setSnapModalOpen] = useState(false);
   const [papersModalOpen, setPapersModalOpen] = useState(false);
+  const [podcastOpen, setPodcastOpen] = useState(false);
   const [activeModalSeed, setActiveModalSeed] = useState("");
   const [activeModalTopic, setActiveModalTopic] = useState("");
 
@@ -585,6 +588,20 @@ export default function TutorPage() {
                           <span>Cheatsheet</span>
                         </button>
 
+                        {/* 2-Host AI Podcast Generator Button */}
+                        <button
+                          onClick={() => {
+                            setActiveModalSeed(msg.content);
+                            setActiveModalTopic("Diskusi Podcast Materi AI Tutor");
+                            setPodcastOpen(true);
+                          }}
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-orange-50/70 hover:bg-orange-100 text-orange-700 dark:bg-orange-950/60 dark:hover:bg-orange-900 dark:text-orange-300 transition-colors font-medium text-[11.5px] border border-orange-100 dark:border-orange-900/40"
+                          title="Ubah Penjelasan Menjadi Podcast 2 Host (NotebookLM Style)"
+                        >
+                          <Headphones className="h-3.5 w-3.5 text-orange-500" />
+                          <span>Podcast</span>
+                        </button>
+
                         <button
                           onClick={() => handleCreateQuizFromResponse(msg.content)}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors font-semibold text-[11.5px] ml-auto shadow-xs"
@@ -645,6 +662,19 @@ export default function TutorPage() {
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-stone-200/80 bg-stone-50 hover:bg-stone-100 text-stone-600 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 transition shadow-2xs"
               >
                 <GraduationCap className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveModalSeed("");
+                  setActiveModalTopic("");
+                  setPodcastOpen(true);
+                }}
+                title="AI Podcast Studio (NotebookLM Style)"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-stone-200/80 bg-stone-50 hover:bg-stone-100 text-stone-600 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 transition shadow-2xs"
+              >
+                <Headphones className="h-4 w-4 text-orange-600 dark:text-orange-400" />
               </button>
 
               <input
@@ -741,6 +771,15 @@ export default function TutorPage() {
             `## ${paper.title}\n\n**Penulis:** ${paper.authors?.join(", ")} (${paper.year})\n**Sitasi APA:** ${paper.apa_citation}\n**Link:** ${paper.url}\n\n### Abstrak\n${paper.abstract}`
           );
         }}
+      />
+
+      {/* AI Podcast Studio Modal (2-Host Audio Overview) */}
+      <PodcastModal
+        isOpen={podcastOpen}
+        onClose={() => setPodcastOpen(false)}
+        initialTopic={activeModalTopic || "Materi AI Tutor"}
+        initialSourceText={activeModalSeed}
+        onImportToNotes={(text) => openSaveNoteModal(text)}
       />
     </AppLayout>
   );
