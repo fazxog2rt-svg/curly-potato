@@ -26,9 +26,10 @@ interface MotivationData {
 interface AIMotivationCardProps {
   currentSubject?: string;
   className?: string;
+  compact?: boolean;
 }
 
-export function AIMotivationCard({ currentSubject, className = "" }: AIMotivationCardProps) {
+export function AIMotivationCard({ currentSubject, className = "", compact = false }: AIMotivationCardProps) {
   const [data, setData] = useState<MotivationData>({
     quote: "Barangsiapa menempuh suatu jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan menuju surga.",
     source: "HR. Muslim no. 2699",
@@ -78,10 +79,9 @@ export function AIMotivationCard({ currentSubject, className = "" }: AIMotivatio
     const textToRead = `${data.quote}. Dari ${data.source}. ${data.reflection}`;
     const utterance = new SpeechSynthesisUtterance(textToRead);
     utterance.lang = "id-ID";
-    utterance.rate = 0.95; // Calm, thoughtful pace
+    utterance.rate = 0.95;
     utterance.pitch = 1.05;
 
-    // Try finding natural voice
     const voices = window.speechSynthesis.getVoices();
     const naturalVoice = voices.find(
       (v) =>
@@ -99,20 +99,20 @@ export function AIMotivationCard({ currentSubject, className = "" }: AIMotivatio
 
   return (
     <div
-      className={`relative shrink-0 overflow-hidden rounded-3xl border border-stone-200/80 bg-[#fbf9f5] p-5 shadow-xs transition-all dark:border-stone-800 dark:bg-[#1e1c19] ${className}`}
+      className={`relative flex flex-col justify-between overflow-hidden rounded-3xl border border-stone-200/90 bg-[#faf8f5] p-5.5 shadow-xs transition-all dark:border-stone-800 dark:bg-[#1a1918] ${className}`}
     >
-      {/* Decorative Background Quote Watermark */}
-      <div className="absolute -right-2 -bottom-2 text-stone-300/25 dark:text-stone-700/20 pointer-events-none select-none">
-        <Quote className="h-24 w-24 rotate-180" />
+      {/* Subtle Quote Watermark */}
+      <div className="absolute -right-2 -bottom-2 text-stone-300/20 dark:text-stone-800/30 pointer-events-none select-none">
+        <Quote className="h-20 w-20 rotate-180" />
       </div>
 
-      <div className="relative z-10 space-y-3.5">
-        {/* Top Control Bar: Category Switcher & Refresh */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-200/60 pb-3 dark:border-stone-800">
-          <div className="flex items-center gap-1.5 overflow-x-auto">
+      <div className="relative z-10 flex flex-col justify-between h-full space-y-3.5">
+        {/* Top Control Bar: Compact Category Switcher & Actions */}
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-200/70 pb-3 dark:border-stone-800/80">
+          <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
             {[
-              { id: "islamic", label: "🌙 Mutiara Islami" },
-              { id: "science_leaders", label: "🔬 Tokoh & Sains" },
+              { id: "islamic", label: "🌙 Islami" },
+              { id: "science_leaders", label: "🔬 Sains" },
               { id: "philosophy", label: "🏛️ Filosofi" },
               { id: "general", label: "🌟 Semangat" },
             ].map((cat) => (
@@ -121,8 +121,8 @@ export function AIMotivationCard({ currentSubject, className = "" }: AIMotivatio
                 onClick={() => setCategory(cat.id)}
                 className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition ${
                   category === cat.id
-                    ? "bg-stone-800 text-stone-50 shadow-xs dark:bg-stone-100 dark:text-stone-900"
-                    : "bg-stone-100/90 text-stone-600 hover:bg-stone-200/80 dark:bg-stone-800/80 dark:text-stone-300"
+                    ? "bg-stone-900 text-stone-50 shadow-xs dark:bg-stone-100 dark:text-stone-900"
+                    : "bg-white text-stone-600 hover:bg-stone-100 dark:bg-stone-800/60 dark:text-stone-300 dark:hover:bg-stone-800"
                 }`}
               >
                 {cat.label}
@@ -134,10 +134,10 @@ export function AIMotivationCard({ currentSubject, className = "" }: AIMotivatio
             {/* Audio Voice Reader */}
             <button
               onClick={handleSpeak}
-              className={`rounded-full p-1.5 text-xs transition border ${
+              className={`rounded-xl p-1.5 text-xs transition border ${
                 isPlaying
-                  ? "bg-stone-800 text-stone-100 border-stone-800 animate-pulse dark:bg-stone-100 dark:text-stone-900"
-                  : "bg-white text-stone-700 border-stone-200/80 hover:bg-stone-100 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-300"
+                  ? "bg-stone-900 text-stone-100 border-stone-900 animate-pulse dark:bg-stone-100 dark:text-stone-900"
+                  : "bg-white text-stone-700 border-stone-200 hover:bg-stone-100 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-300"
               }`}
               title={isPlaying ? "Hentikan Suara" : "Dengarkan dengan Suara Tenang"}
             >
@@ -150,34 +150,34 @@ export function AIMotivationCard({ currentSubject, className = "" }: AIMotivatio
               variant="outline"
               onClick={() => fetchNewMotivation()}
               isLoading={loading}
-              className="h-7 px-2.5 text-[11px] border-stone-300/80 text-stone-700 hover:bg-stone-100 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800"
+              className="h-7.5 px-2.5 text-[11px] rounded-xl border-stone-200 bg-white text-stone-700 hover:bg-stone-100 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300"
             >
               <RefreshCw className="mr-1 h-3 w-3" />
-              Generate Baru
+              Baru
             </Button>
           </div>
         </div>
 
         {/* Main Quote Content */}
-        <div className="space-y-2">
-          <div className="flex items-start gap-3">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-stone-200/70 text-stone-700 dark:bg-stone-800 dark:text-stone-300 mt-0.5">
-              <Sparkles className="h-4 w-4" />
+        <div className="space-y-2 flex-1 flex flex-col justify-center py-1">
+          <div className="flex items-start gap-2.5">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-stone-200/80 text-stone-700 dark:bg-stone-800 dark:text-stone-300 mt-0.5">
+              <Sparkles className="h-3.5 w-3.5" />
             </div>
             <div className="space-y-1">
-              <p className="text-sm md:text-base font-semibold text-stone-900 dark:text-stone-100 leading-relaxed">
-                "{data.quote}"
+              <p className="text-sm font-medium text-stone-900 dark:text-stone-100 leading-relaxed italic">
+                &ldquo;{data.quote}&rdquo;
               </p>
-              <p className="text-xs font-medium text-stone-500 dark:text-stone-400">
+              <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 not-italic">
                 — {data.source}
               </p>
             </div>
           </div>
 
-          {/* AI Personal Reflection Note */}
+          {/* AI Reflection Note */}
           {data.reflection && (
-            <div className="ml-10 rounded-xl bg-white/80 p-2.5 border border-stone-200/70 dark:bg-stone-900/60 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
-              <span className="font-semibold text-stone-800 dark:text-stone-200 mr-1.5">
+            <div className="rounded-xl bg-white/90 p-2.5 border border-stone-200/70 dark:bg-stone-900/60 dark:border-stone-800 text-[11.5px] text-stone-600 dark:text-stone-300 leading-relaxed">
+              <span className="font-semibold text-stone-800 dark:text-stone-200 mr-1">
                 💡 Renungan:
               </span>
               {data.reflection}
@@ -185,22 +185,24 @@ export function AIMotivationCard({ currentSubject, className = "" }: AIMotivatio
           )}
         </div>
 
-        {/* Quick Mood Shortcuts */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10px] text-stone-400">
-          <span>Kondisi saat ini:</span>
-          {["Lagi lelah / jenuh", "Takut ujian besok", "Perlu fokus tinggi"].map((m, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setMood(m);
-                fetchNewMotivation(m);
-              }}
-              className="rounded-md border border-stone-200 bg-white/70 px-2 py-0.5 font-medium text-stone-600 hover:border-stone-400 hover:text-stone-900 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 transition"
-            >
-              {m}
-            </button>
-          ))}
-        </div>
+        {/* Quick Mood Shortcuts (shown only if not compact or minimal) */}
+        {!compact ? (
+          <div className="flex flex-wrap items-center gap-1.5 pt-1 text-[10.5px] text-stone-400">
+            <span>Kondisi saat ini:</span>
+            {["Lagi lelah / jenuh", "Takut ujian besok", "Perlu fokus tinggi"].map((m, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setMood(m);
+                  fetchNewMotivation(m);
+                }}
+                className="rounded-md border border-stone-200 bg-white/70 px-2 py-0.5 font-medium text-stone-600 hover:border-stone-400 hover:text-stone-900 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 transition"
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );

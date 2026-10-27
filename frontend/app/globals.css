@@ -8,7 +8,7 @@
   --card-foreground: #1c1917;
   --popover: #ffffff;
   --popover-foreground: #1c1917;
-  --primary: #4f46e5;
+  --primary: #4338ca;
   --primary-foreground: #ffffff;
   --primary-light: #eef2ff;
   --secondary: #f4f1ea;
@@ -22,29 +22,29 @@
   --border: #e7e5e4;
   --input: #e7e5e4;
   --ring: #6366f1;
-  --radius: 0.75rem;
+  --radius: 0.875rem;
 }
 
 .dark {
-  --background: #171615;
+  --background: #151413;
   --foreground: #f5f5f4;
-  --card: #21201d;
+  --card: #1f1d1b;
   --card-foreground: #f5f5f4;
-  --popover: #21201d;
+  --popover: #1f1d1b;
   --popover-foreground: #f5f5f4;
   --primary: #6366f1;
   --primary-foreground: #ffffff;
   --primary-light: #1e1b4b;
-  --secondary: #282623;
+  --secondary: #272522;
   --secondary-foreground: #f5f5f4;
-  --muted: #282623;
+  --muted: #272522;
   --muted-foreground: #a8a29e;
-  --accent: #282623;
+  --accent: #272522;
   --accent-foreground: #f5f5f4;
   --destructive: #7f1d1d;
   --destructive-foreground: #f5f5f4;
-  --border: #363430;
-  --input: #363430;
+  --border: #33302c;
+  --input: #33302c;
   --ring: #818cf8;
 }
 
@@ -55,7 +55,40 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  letter-spacing: -0.011em;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Glassmorphism & Card Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(231, 229, 228, 0.8);
+}
+
+.dark .glass-panel {
+  background: rgba(31, 29, 27, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(51, 48, 44, 0.8);
+}
+
+.card-warm {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-warm:hover {
+  border-color: #d6d3d1;
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.04);
+}
+
+.dark .card-warm:hover {
+  border-color: #44403c;
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* Custom scrollbars */

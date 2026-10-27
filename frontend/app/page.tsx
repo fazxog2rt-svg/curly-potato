@@ -18,6 +18,7 @@ import {
   TrendingUp,
   FileText,
   Plus,
+  Flame,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { AnalyticsOverview, StudyGoalItem, StudyTaskItem, UserProfile } from "@/lib/types";
@@ -94,206 +95,235 @@ export default function DashboardPage() {
       subtitle="Selamat datang di AI Study Companion. Siap melanjutkan pembelajaran hari ini?"
     >
       <div className="space-y-6">
-        {/* AI Dynamic Motivation & Hikmah Card */}
-        <AIMotivationCard />
+        {/* Top Hero Section: Clean 2-Column Balanced Grid */}
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+          {/* Left: Study Status, AI Recommendation & Quick Actions (7 cols) */}
+          <div className="lg:col-span-7 flex flex-col justify-between rounded-3xl border border-stone-200/90 bg-white p-5.5 shadow-xs dark:border-stone-800 dark:bg-[#1a1918]">
+            <div>
+              {/* Top row: Level + Streak Pill */}
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-stone-900 text-stone-50 font-bold text-sm shadow-xs dark:bg-stone-100 dark:text-stone-900">
+                    Lv.2
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
+                      Pelajar Berdedikasi
+                    </h2>
+                    <p className="text-xs text-stone-500 dark:text-stone-400">
+                      {formatTime(analytics?.total_study_minutes || 0)} belajar • {analytics?.quizzes_taken_count || 0} kuis selesai
+                    </p>
+                  </div>
+                </div>
 
-        {/* Recommendation / Motivation Alert Banner */}
-        {analytics?.recommendations && analytics.recommendations.length > 0 && (
-          <div className="relative overflow-hidden rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/80 via-white to-purple-50/60 p-4 shadow-xs dark:border-indigo-950 dark:from-indigo-950/40 dark:via-slate-900 dark:to-purple-950/30">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-xs">
-                <Sparkles className="h-5 w-5" />
+                <div className="flex items-center gap-1.5 rounded-full border border-amber-200/80 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300">
+                  <Flame className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                  <span>3 Hari Beruntun</span>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="text-xs font-semibold text-indigo-900 dark:text-indigo-300">
-                  Rekomendasi AI Hari Ini:
-                </p>
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
-                  {analytics.recommendations[0]}
-                </p>
+
+              {/* Embedded AI Recommendation */}
+              <div className="mt-4 rounded-2xl border border-stone-200/80 bg-stone-50/70 p-3.5 dark:border-stone-800 dark:bg-stone-900/50">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400 mt-0.5">
+                    <Sparkles className="h-4 w-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-semibold text-stone-900 dark:text-stone-200">
+                        Rekomendasi AI Hari Ini:
+                      </span>
+                      <a
+                        href="/review"
+                        className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 inline-flex items-center gap-1"
+                      >
+                        Review Sekarang <ArrowRight className="h-3 w-3" />
+                      </a>
+                    </div>
+                    <p className="mt-1 text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
+                      {analytics?.recommendations?.[0] || "Coba kerjakan kuis evaluasi berkala untuk menguji pemahaman materi terkini."}
+                    </p>
+                  </div>
+                </div>
               </div>
+            </div>
+
+            {/* Quick Action Navigation Buttons */}
+            <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-stone-100 dark:border-stone-800/80">
+              <a href="/tutor">
+                <Button size="sm" className="h-8 rounded-xl text-xs gap-1.5 bg-stone-900 text-stone-50 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200">
+                  <Bot className="h-3.5 w-3.5" /> Tanya AI Tutor
+                </Button>
+              </a>
               <a href="/review">
-                <Button size="sm" variant="outline" className="hidden sm:inline-flex text-xs">
-                  Review Sekarang <ArrowRight className="h-3.5 w-3.5" />
+                <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs gap-1.5 border-stone-200 bg-white text-stone-700 hover:bg-stone-100 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300">
+                  <RotateCcw className="h-3.5 w-3.5" /> Flashcard Review
+                </Button>
+              </a>
+              <a href="/materials">
+                <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs gap-1.5 border-stone-200 bg-white text-stone-700 hover:bg-stone-100 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300">
+                  <BookOpen className="h-3.5 w-3.5" /> Materi Kuliah
                 </Button>
               </a>
             </div>
           </div>
-        )}
 
-        {/* Gamification, Streak & Badges */}
-        <GamificationBadges
-          studyMinutes={analytics?.total_study_minutes || 0}
-          quizCount={analytics?.quizzes_taken_count || 0}
-          avgScore={analytics?.average_quiz_score || 0}
-          cardsReviewed={analytics?.total_cards_count || 0}
-        />
+          {/* Right: AI Hikmah & Motivation (5 cols) */}
+          <div className="lg:col-span-5">
+            <AIMotivationCard compact={true} className="h-full" />
+          </div>
+        </div>
 
         {/* 4 Metric Cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="hover:border-indigo-200 transition-colors">
+          <div className="rounded-2xl border border-stone-200/90 bg-white p-4.5 shadow-xs hover:border-stone-400 transition-all dark:border-stone-800 dark:bg-[#1a1918]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Waktu Belajar</span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400">
+              <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">Total Waktu Belajar</span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300">
                 <Clock className="h-4 w-4" />
               </div>
             </div>
             <div className="mt-3">
-              <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              <div className="text-2xl font-bold text-stone-900 dark:text-white">
                 {formatTime(analytics?.total_study_minutes || 0)}
               </div>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">
                 Dari {analytics?.total_sessions_count || 0} sesi belajar
               </p>
             </div>
-          </Card>
+          </div>
 
-          <Card className="hover:border-indigo-200 transition-colors">
+          <div className="rounded-2xl border border-stone-200/90 bg-white p-4.5 shadow-xs hover:border-stone-400 transition-all dark:border-stone-800 dark:bg-[#1a1918]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Rata-rata Nilai Kuis</span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
+              <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">Rata-rata Nilai Kuis</span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
                 <Award className="h-4 w-4" />
               </div>
             </div>
             <div className="mt-3">
-              <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              <div className="text-2xl font-bold text-stone-900 dark:text-white">
                 {analytics?.average_quiz_score ? `${analytics.average_quiz_score}%` : "Belum Ada"}
               </div>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">
                 {analytics?.quizzes_taken_count || 0} kuis telah diselesaikan
               </p>
             </div>
-          </Card>
+          </div>
 
-          <Card className="hover:border-indigo-200 transition-colors">
+          <div className="rounded-2xl border border-stone-200/90 bg-white p-4.5 shadow-xs hover:border-stone-400 transition-all dark:border-stone-800 dark:bg-[#1a1918]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Jatuh Tempo Review</span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400">
+              <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">Jatuh Tempo Review</span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400">
                 <RotateCcw className="h-4 w-4" />
               </div>
             </div>
             <div className="mt-3">
-              <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              <div className="text-2xl font-bold text-stone-900 dark:text-white">
                 {analytics?.cards_due_for_review || 0}
               </div>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">
                 Dari total {analytics?.total_cards_count || 0} kartu materi
               </p>
             </div>
-          </Card>
+          </div>
 
-          <Card className="hover:border-indigo-200 transition-colors">
+          <div className="rounded-2xl border border-stone-200/90 bg-white p-4.5 shadow-xs hover:border-stone-400 transition-all dark:border-stone-800 dark:bg-[#1a1918]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Target Pembelajaran</span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-400">
+              <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">Target Pembelajaran</span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300">
                 <TrendingUp className="h-4 w-4" />
               </div>
             </div>
             <div className="mt-3">
-              <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              <div className="text-2xl font-bold text-stone-900 dark:text-white">
                 {analytics?.study_goals_active || 0} Aktif
               </div>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">
                 {analytics?.study_goals_completed || 0} target tercapai
               </p>
             </div>
-          </Card>
+          </div>
         </div>
 
-        {/* Middle Section: Weekly Activity & AI Tutor Fast Entry */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Chart Card */}
-          <Card className="lg:col-span-2">
-            <CardHeader className="flex-row items-center justify-between pb-2">
+        {/* Middle Section: Weekly Activity Chart (7 cols) + Gamification Badges (5 cols) */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          {/* Chart Card (7 cols) */}
+          <div className="lg:col-span-7 rounded-3xl border border-stone-200/90 bg-white p-5.5 shadow-xs dark:border-stone-800 dark:bg-[#1a1918]">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-200/60 dark:border-stone-800/80">
               <div>
-                <CardTitle>Aktivitas Belajar 7 Hari Terakhir</CardTitle>
-                <CardDescription>Durasi belajar harian (dalam menit)</CardDescription>
+                <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
+                  Aktivitas Belajar 7 Hari Terakhir
+                </h3>
+                <p className="text-xs text-stone-500 dark:text-stone-400">
+                  Durasi belajar harian (dalam menit)
+                </p>
               </div>
-              <Badge variant="secondary">
+              <span className="rounded-full bg-stone-100 px-2.5 py-1 text-xs font-semibold text-stone-700 dark:bg-stone-800 dark:text-stone-300">
                 Konsistensi: {analytics?.consistency_score || 0}%
-              </Badge>
-            </CardHeader>
-            <CardContent>
-              <div className="h-64 w-full pt-4">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <XAxis dataKey="day" stroke="#94a3b8" fontSize={12} tickLine={false} />
-                    <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                    <Tooltip
-                      content={({ active, payload }) => {
-                        if (active && payload && payload.length) {
-                          return (
-                            <div className="rounded-lg border border-slate-200 bg-white p-2 text-xs shadow-md dark:border-slate-800 dark:bg-slate-900">
-                              <span className="font-semibold">{payload[0].payload.day}:</span>{" "}
-                              {payload[0].value} menit
-                            </div>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                    <Bar dataKey="minutes" fill="#6366f1" radius={[6, 6, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick AI Tutor Card */}
-          <Card className="flex flex-col justify-between border-indigo-100 bg-gradient-to-b from-indigo-50/50 to-white dark:border-indigo-950 dark:from-slate-900 dark:to-slate-900">
-            <div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-200 dark:shadow-none mb-4">
-                <Bot className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                Mulai Tanya AI Tutor
-              </h3>
-              <p className="mt-2 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Bingung dengan konsep sulit? Dapatkan penjelasan bertahap, analogi ramah, atau latihan soal yang adaptif.
-              </p>
-
-              <div className="mt-4 space-y-2">
-                <div className="rounded-lg bg-white/80 p-2.5 text-xs text-slate-600 dark:bg-slate-800/80 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/50">
-                  💡 &quot;Jelaskan cara kerja algoritma Dijkstra dengan analogi peta kota.&quot;
-                </div>
-                <div className="rounded-lg bg-white/80 p-2.5 text-xs text-slate-600 dark:bg-slate-800/80 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/50">
-                  💡 &quot;Bagaimana perbedaan mitosis dan meiosis pada biologi sel?&quot;
-                </div>
-              </div>
+              </span>
             </div>
-
-            <div className="pt-6">
-              <a href="/tutor" className="block w-full">
-                <Button className="w-full gap-2">
-                  Buka AI Tutor <ArrowRight className="h-4 w-4" />
-                </Button>
-              </a>
+            <div className="h-64 w-full pt-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <XAxis dataKey="day" stroke="#a8a29e" fontSize={12} tickLine={false} />
+                  <YAxis stroke="#a8a29e" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div className="rounded-xl border border-stone-200 bg-white p-2.5 text-xs shadow-md dark:border-stone-800 dark:bg-stone-900">
+                            <span className="font-semibold text-stone-800 dark:text-stone-200">{payload[0].payload.day}:</span>{" "}
+                            <span className="font-bold text-stone-900 dark:text-white">{payload[0].value} menit</span>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <Bar dataKey="minutes" fill="#1c1917" className="dark:fill-[#f5f5f4]" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-          </Card>
+          </div>
+
+          {/* Gamification Badges Showcase (5 cols) */}
+          <div className="lg:col-span-5">
+            <GamificationBadges
+              studyMinutes={analytics?.total_study_minutes || 0}
+              quizCount={analytics?.quizzes_taken_count || 0}
+              avgScore={analytics?.average_quiz_score || 0}
+              cardsReviewed={analytics?.total_cards_count || 0}
+              className="h-full"
+            />
+          </div>
         </div>
 
         {/* Bottom Section: Active Tasks & Study Goals */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Tasks List */}
-          <Card>
-            <CardHeader className="flex-row items-center justify-between pb-3">
+          <div className="rounded-3xl border border-stone-200/90 bg-white p-5.5 shadow-xs dark:border-stone-800 dark:bg-[#1a1918]">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-200/60 dark:border-stone-800/80">
               <div>
-                <CardTitle>Tugas Belajar Hari Ini</CardTitle>
-                <CardDescription>Tandai selesai untuk mencatat progres</CardDescription>
+                <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
+                  Tugas Belajar Hari Ini
+                </h3>
+                <p className="text-xs text-stone-500 dark:text-stone-400">
+                  Tandai selesai untuk mencatat progres
+                </p>
               </div>
               <a href="/planner">
-                <Button size="sm" variant="ghost" className="text-xs">
+                <Button size="sm" variant="ghost" className="text-xs text-stone-600 dark:text-stone-400">
                   Kelola <ArrowRight className="h-3 w-3" />
                 </Button>
               </a>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <div className="pt-4">
               {tasks.length === 0 ? (
                 <div className="py-8 text-center">
-                  <Circle className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
-                  <p className="mt-2 text-xs font-medium text-slate-500">Belum ada tugas belajar yang dibuat.</p>
+                  <Circle className="mx-auto h-8 w-8 text-stone-300 dark:text-stone-600" />
+                  <p className="mt-2 text-xs font-medium text-stone-500">Belum ada tugas belajar yang dibuat.</p>
                   <a href="/planner" className="mt-3 inline-block">
-                    <Button size="sm" variant="outline" className="text-xs gap-1">
+                    <Button size="sm" variant="outline" className="text-xs gap-1 rounded-xl border-stone-200">
                       <Plus className="h-3.5 w-3.5" /> Tambah Tugas
                     </Button>
                   </a>
@@ -304,54 +334,58 @@ export default function DashboardPage() {
                     <div
                       key={task.id}
                       onClick={() => handleToggleTask(task.id)}
-                      className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-100/60 dark:border-slate-800 dark:bg-slate-800/40 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                      className="flex items-center justify-between p-3 rounded-2xl border border-stone-100 bg-stone-50/60 hover:bg-stone-100/70 dark:border-stone-800 dark:bg-stone-900/40 dark:hover:bg-stone-900/70 transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-3">
                         {task.is_completed ? (
-                          <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" />
+                          <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
                         ) : (
-                          <Circle className="h-5 w-5 text-slate-300 dark:text-slate-600 shrink-0" />
+                          <Circle className="h-5 w-5 text-stone-300 dark:text-stone-600 shrink-0" />
                         )}
                         <span
                           className={`text-sm ${
                             task.is_completed
-                              ? "line-through text-slate-400 dark:text-slate-500"
-                              : "font-medium text-slate-800 dark:text-slate-200"
+                              ? "line-through text-stone-400 dark:text-stone-500"
+                              : "font-medium text-stone-800 dark:text-stone-200"
                           }`}
                         >
                           {task.title}
                         </span>
                       </div>
-                      <Badge variant="secondary" className="text-[10px]">
+                      <Badge variant="secondary" className="text-[10.5px] rounded-lg">
                         {task.duration_minutes} mnt
                       </Badge>
                     </div>
                   ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Active Goals */}
-          <Card>
-            <CardHeader className="flex-row items-center justify-between pb-3">
+          <div className="rounded-3xl border border-stone-200/90 bg-white p-5.5 shadow-xs dark:border-stone-800 dark:bg-[#1a1918]">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-200/60 dark:border-stone-800/80">
               <div>
-                <CardTitle>Target Belajar</CardTitle>
-                <CardDescription>Tujuan pembelajaran yang sedang ditempuh</CardDescription>
+                <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
+                  Target Belajar
+                </h3>
+                <p className="text-xs text-stone-500 dark:text-stone-400">
+                  Tujuan pembelajaran yang sedang ditempuh
+                </p>
               </div>
               <a href="/planner">
-                <Button size="sm" variant="ghost" className="text-xs">
+                <Button size="sm" variant="ghost" className="text-xs text-stone-600 dark:text-stone-400">
                   Semua Target <ArrowRight className="h-3 w-3" />
                 </Button>
               </a>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <div className="pt-4">
               {goals.length === 0 ? (
                 <div className="py-8 text-center">
-                  <Award className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
-                  <p className="mt-2 text-xs font-medium text-slate-500">Belum ada target belajar yang ditentukan.</p>
+                  <Award className="mx-auto h-8 w-8 text-stone-300 dark:text-stone-600" />
+                  <p className="mt-2 text-xs font-medium text-stone-500">Belum ada target belajar yang ditentukan.</p>
                   <a href="/planner" className="mt-3 inline-block">
-                    <Button size="sm" variant="outline" className="text-xs gap-1">
+                    <Button size="sm" variant="outline" className="text-xs gap-1 rounded-xl border-stone-200">
                       <Plus className="h-3.5 w-3.5" /> Buat Target
                     </Button>
                   </a>
@@ -361,16 +395,16 @@ export default function DashboardPage() {
                   {goals.slice(0, 4).map((goal) => (
                     <div key={goal.id} className="space-y-1.5">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                        <span className="font-semibold text-stone-800 dark:text-stone-200">
                           {goal.title}
                         </span>
-                        <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                        <span className="font-bold text-stone-900 dark:text-stone-100">
                           {goal.progress_percentage}%
                         </span>
                       </div>
-                      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-stone-100 dark:bg-stone-800">
                         <div
-                          className="h-full bg-indigo-600 transition-all duration-500 rounded-full"
+                          className="h-full bg-stone-900 dark:bg-stone-100 transition-all duration-500 rounded-full"
                           style={{ width: `${goal.progress_percentage}%` }}
                         />
                       </div>
@@ -378,8 +412,8 @@ export default function DashboardPage() {
                   ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </AppLayout>

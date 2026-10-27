@@ -18,6 +18,7 @@ interface GamificationBadgesProps {
   quizCount?: number;
   avgScore?: number;
   cardsReviewed?: number;
+  className?: string;
 }
 
 export function GamificationBadges({
@@ -25,6 +26,7 @@ export function GamificationBadges({
   quizCount = 0,
   avgScore = 0,
   cardsReviewed = 0,
+  className = "",
 }: GamificationBadgesProps) {
   const [streakDays, setStreakDays] = useState(3); // Demo baseline streak
 
@@ -103,23 +105,23 @@ export function GamificationBadges({
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-5">
+    <div className={`rounded-3xl border border-stone-200/90 bg-white p-5.5 shadow-xs dark:border-stone-800 dark:bg-[#1a1918] space-y-5 ${className}`}>
       {/* Level & Streak Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200/60 dark:border-stone-800/80">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-white font-extrabold text-lg shadow-sm">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-stone-900 text-stone-50 font-bold text-base shadow-xs dark:bg-stone-100 dark:text-stone-900">
             Lv.{level}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+              <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100">
                 Pelajar Berdedikasi
               </h4>
-              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 font-bold text-[10.5px]">
+              <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200/80 text-amber-800 dark:bg-amber-950/40 dark:border-amber-900/40 dark:text-amber-300 font-semibold text-[11px]">
                 <Flame className="h-3 w-3 fill-amber-500 text-amber-500" /> {streakDays} Hari Beruntun
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
               {totalXP} XP terkumpul • {nextLevelXP - totalXP} XP menuju Level {level + 1}
             </p>
           </div>
@@ -127,13 +129,13 @@ export function GamificationBadges({
 
         {/* XP Progress Bar */}
         <div className="w-full sm:w-48">
-          <div className="flex justify-between text-[11px] font-semibold text-slate-400 mb-1">
+          <div className="flex justify-between text-[11px] font-semibold text-stone-500 dark:text-stone-400 mb-1">
             <span>Kemajuan Level</span>
             <span>{progressPercent}%</span>
           </div>
-          <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+          <div className="h-2 w-full rounded-full bg-stone-100 dark:bg-stone-800 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 to-amber-500 rounded-full transition-all duration-500"
+              className="h-full bg-stone-900 dark:bg-stone-100 rounded-full transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -143,10 +145,10 @@ export function GamificationBadges({
       {/* Badges Carousel / Grid */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h5 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+          <h5 className="text-xs font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">
             Lencana Prestasi Pembelajaran
           </h5>
-          <span className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold">
+          <span className="text-xs text-stone-600 dark:text-stone-300 font-medium">
             {badges.filter((b) => b.unlocked).length} dari {badges.length} Diraih
           </span>
         </div>
@@ -156,27 +158,27 @@ export function GamificationBadges({
             <div
               key={badge.id}
               onClick={() => handleCelebrateBadge(badge)}
-              className={`group flex flex-col items-center text-center p-3 rounded-xl border transition-all cursor-pointer ${
+              className={`group flex flex-col items-center text-center p-3 rounded-2xl border transition-all cursor-pointer ${
                 badge.unlocked
-                  ? "bg-slate-50/80 border-slate-200/90 hover:border-amber-300 hover:shadow-xs dark:bg-slate-850 dark:border-slate-800"
-                  : "bg-slate-50/30 border-slate-200/40 opacity-50 dark:bg-slate-900/50 dark:border-slate-800/40"
+                  ? "bg-[#faf8f5] border-stone-200/90 hover:border-amber-400 hover:shadow-xs dark:bg-stone-900/40 dark:border-stone-800 dark:hover:border-amber-700/60"
+                  : "bg-stone-50/40 border-stone-200/40 opacity-45 dark:bg-stone-900/20 dark:border-stone-800/40"
               }`}
             >
               <div className="relative text-2xl mb-1.5 transition-transform group-hover:scale-110">
                 {badge.icon}
                 {!badge.unlocked && (
-                  <div className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                  <div className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-stone-300 dark:bg-stone-700 text-stone-600 dark:text-stone-300">
                     <Lock className="h-2.5 w-2.5" />
                   </div>
                 )}
               </div>
-              <h6 className="text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1">
+              <h6 className="text-xs font-bold text-stone-900 dark:text-stone-100 line-clamp-1">
                 {badge.name}
               </h6>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 leading-tight">
+              <p className="text-[10px] text-stone-500 dark:text-stone-400 mt-0.5 line-clamp-2 leading-tight">
                 {badge.description}
               </p>
-              <span className="mt-2 text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+              <span className="mt-2 text-[10px] font-bold text-amber-700 dark:text-amber-400">
                 +{badge.xp} XP
               </span>
             </div>
