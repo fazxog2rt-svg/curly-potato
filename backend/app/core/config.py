@@ -41,7 +41,15 @@ class Settings(BaseSettings):
 
     @field_validator("DATABASE_URL", mode="before")
     def assemble_database_url(cls, v: str) -> str:
-        # In Vercel serverless environment, only /tmp is writable
+        # If PostgreSQL URL provided (e.g. Neon.tech), normalize dialect to postgresql+psycopg2://
+        if v and ("postgres" in str(v)):
+            url_str = str(v)
+            if url_str.startswith("postgres://"):
+                url_str = url_str.replace("postgres://", "postgresql+psycopg2://", 1)
+            elif url_str.startswith("postgresql://"):
+                url_str = url_str.replace("postgresql://", "postgresql+psycopg2://", 1)
+            return url_str
+        # In Vercel serverless environment without Postgres, only /tmp is writable
         if os.getenv("VERCEL") == "1" and ("sqlite" in str(v) or not v):
             return "sqlite:////tmp/study_companion.db"
         return v or "sqlite:///./study_companion.db"
