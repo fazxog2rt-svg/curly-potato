@@ -42,49 +42,101 @@ async def search_academic_papers(
     limit: int = Query(5, ge=1, le=10)
 ):
     """
-    Search real peer-reviewed scientific papers via Semantic Scholar Graph API.
-    100% Free with no API key needed.
+    Search real peer-reviewed scientific papers via Semantic Scholar Graph API & OpenAlex.
+    Includes automatic failover to OpenAlex (250M+ indexed research papers) if Semantic Scholar is rate-limited.
     """
-    url = "https://api.semanticscholar.org/graph/v1/paper/search"
-    params = {
+    papers = []
+
+    # 1. Try Semantic Scholar
+    ss_url = "https://api.semanticscholar.org/graph/v1/paper/search"
+    ss_params = {
         "query": query,
         "limit": limit,
         "fields": "title,authors,year,abstract,openAccessPdf,citationCount,url,fieldsOfStudy"
     }
 
     try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.get(url, params=params)
-            if resp.status_code != 200:
-                return {"query": query, "total": 0, "papers": []}
-            
-            data = resp.json()
-            papers = []
-            for item in data.get("data", []):
-                authors = [a.get("name") for a in item.get("authors", []) if a.get("name")]
-                pdf_url = item.get("openAccessPdf", {}).get("url") if item.get("openAccessPdf") else None
-                
-                # Format APA Citation preview
-                first_author = authors[0].split()[-1] if authors else "Anonim"
-                year = item.get("year") or "n.d."
-                apa_citation = f"{first_author} et al. ({year}). {item.get('title')}."
-                
-                papers.append({
-                    "id": item.get("paperId"),
-                    "title": item.get("title"),
-                    "authors": authors[:4],
-                    "year": item.get("year"),
-                    "abstract": item.get("abstract"),
-                    "citation_count": item.get("citationCount", 0),
-                    "url": item.get("url"),
-                    "pdf_url": pdf_url,
-                    "apa_citation": apa_citation,
-                    "fields": item.get("fieldsOfStudy") or []
-                })
+        async with httpx.AsyncClient(timeout=6.0) as client:
+            resp = await client.get(ss_url, params=ss_params, headers={"User-Agent": "EduApp/1.0"})
+            if resp.status_code == 200:
+                data = resp.json()
+                for item in data.get("data", []):
+                    authors = [a.get("name") for a in item.get("authors", []) if a.get("name")]
+                    pdf_url = item.get("openAccessPdf", {}).get("url") if item.get("openAccessPdf") else None
+                    first_author = authors[0].split()[-1] if authors else "Anonim"
+                    year = item.get("year") or "n.d."
+                    apa_citation = f"{first_author} et al. ({year}). {item.get('title')}."
 
-            return {"query": query, "total": len(papers), "papers": papers}
-    except Exception as e:
-        return {"query": query, "total": 0, "papers": [], "error": str(e)}
+                    papers.append({
+                        "id": item.get("paperId"),
+                        "title": item.get("title"),
+                        "authors": authors[:4],
+                        "year": item.get("year"),
+                        "abstract": item.get("abstract") or "Abstrak tidak tersedia secara publik.",
+                        "citation_count": item.get("citationCount", 0),
+                        "url": item.get("url"),
+                        "pdf_url": pdf_url,
+                        "apa_citation": apa_citation,
+                        "fields": item.get("fieldsOfStudy") or []
+                    })
+    except Exception:
+        pass
+
+    # 2. Resilient Fallback to OpenAlex if Semantic Scholar returned 0 or was rate-limited (429)
+    if not papers:
+        try:
+            alex_url = "https://api.openalex.org/works"
+            alex_params = {
+                "search": query,
+                "per_page": limit,
+                "sort": "relevance_score:desc"
+            }
+            async with httpx.AsyncClient(timeout=8.0) as client:
+                alex_resp = await client.get(alex_url, params=alex_params, headers={"User-Agent": "EduApp-Academic/1.0 (mailto:support@eduapp.local)"})
+                if alex_resp.status_code == 200:
+                    alex_data = alex_resp.json()
+                    for item in alex_data.get("results", []):
+                        authors = [
+                            a.get("author", {}).get("display_name")
+                            for a in item.get("authorships", [])
+                            if a.get("author", {}).get("display_name")
+                        ]
+                        first_author = authors[0].split()[-1] if authors else "Anonim"
+                        year = item.get("publication_year") or "n.d."
+                        title = item.get("title") or "Untitled Academic Work"
+                        apa_citation = f"{first_author} et al. ({year}). {title}."
+
+                        # Reconstruct abstract from OpenAlex inverted index
+                        abstract = ""
+                        inv_index = item.get("abstract_inverted_index")
+                        if inv_index and isinstance(inv_index, dict):
+                            words_pos = {}
+                            for w, positions in inv_index.items():
+                                for pos in positions:
+                                    words_pos[pos] = w
+                            abstract = " ".join(words_pos[p] for p in sorted(words_pos.keys()))
+                        if not abstract:
+                            abstract = "Abstrak ringkas tersedia melalui tautan publikasi DOI."
+
+                        pdf_url = item.get("open_access", {}).get("oa_url")
+                        url = item.get("doi") or f"https://openalex.org/{item.get('id', '')}"
+
+                        papers.append({
+                            "id": item.get("id"),
+                            "title": title,
+                            "authors": authors[:4],
+                            "year": year,
+                            "abstract": abstract,
+                            "citation_count": item.get("cited_by_count", 0),
+                            "url": url,
+                            "pdf_url": pdf_url,
+                            "apa_citation": apa_citation,
+                            "fields": [c.get("display_name") for c in item.get("concepts", [])[:3]]
+                        })
+        except Exception as e:
+            return {"query": query, "total": 0, "papers": [], "error": str(e)}
+
+    return {"query": query, "total": len(papers), "papers": papers}
 
 
 # --- 2. Wikipedia Live Knowledge Enrichment API ---
@@ -92,7 +144,7 @@ async def search_academic_papers(
 @router.get("/wikipedia/summary")
 async def get_wikipedia_summary(
     term: str = Query(..., min_length=1, description="Istilah atau nama tokoh yang ingin dicari"),
-    lang: str = Query("id", regex="^(id|en)$")
+    lang: str = Query("id", pattern="^(id|en)$")
 ):
     """
     Fetch instant verified encyclopedic summary from Wikipedia REST API.

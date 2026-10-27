@@ -75,10 +75,10 @@ export function AcademicPapersModal({
             </div>
             <div>
               <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
-                Pencarian Jurnal Ilmiah (Semantic Scholar API)
+                Pencarian Jurnal Ilmiah (OpenAlex & Semantic Scholar)
               </h3>
               <p className="text-xs text-stone-500 dark:text-stone-400">
-                Akses jutaan jurnal akademik, sitasi resmi APA, dan tautan Open Access PDF
+                Akses 250M+ jurnal akademik global, sitasi resmi APA, dan tautan Open Access PDF
               </p>
             </div>
           </div>
@@ -92,7 +92,7 @@ export function AcademicPapersModal({
         </div>
 
         {/* Search Bar */}
-        <div className="p-4 sm:p-5 border-b border-stone-200/60 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/30">
+        <div className="p-4 sm:p-5 border-b border-stone-200/60 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/30 space-y-2.5">
           <form onSubmit={handleSearch} className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3.5 top-3 h-4 w-4 text-stone-400" />
@@ -100,18 +100,41 @@ export function AcademicPapersModal({
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Cari topik penelitian, misal: 'neural networks learning', 'metode pembelajaran aktif'..."
+                placeholder="Cari topik penelitian, misal: 'artificial intelligence', 'machine learning'..."
                 className="w-full rounded-2xl border border-stone-200/90 bg-white pl-10 pr-4 py-2.5 text-xs text-stone-900 placeholder:text-stone-400 focus:border-stone-900 focus:outline-hidden dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
               />
             </div>
             <Button
               type="submit"
               isLoading={loading}
-              className="rounded-2xl bg-stone-900 text-stone-50 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 text-xs font-semibold px-5"
+              className="rounded-2xl bg-stone-900 text-stone-50 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 text-xs font-semibold px-5 shrink-0"
             >
               Cari Jurnal
             </Button>
           </form>
+
+          {/* Quick Keyword Chips */}
+          <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-stone-500">
+            <span className="font-medium text-stone-600 dark:text-stone-400">Rekomendasi topik:</span>
+            {["Artificial Intelligence", "Machine Learning", "Quantum Computing", "Deep Learning", "Educational Technology"].map((topic) => (
+              <button
+                key={topic}
+                type="button"
+                onClick={() => {
+                  setQuery(topic);
+                  setLoading(true);
+                  setSearched(true);
+                  api.tools.searchPapers(topic, 6)
+                    .then((res) => setPapers(res.papers || []))
+                    .catch(() => setPapers([]))
+                    .finally(() => setLoading(false));
+                }}
+                className="rounded-lg border border-stone-200/80 bg-white px-2 py-0.5 text-stone-600 hover:bg-stone-100 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700 transition"
+              >
+                {topic}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Papers List */}
@@ -119,7 +142,7 @@ export function AcademicPapersModal({
           {loading ? (
             <div className="py-12 text-center space-y-2">
               <div className="h-6 w-6 border-2 border-stone-900 border-t-transparent rounded-full animate-spin mx-auto dark:border-stone-100 dark:border-t-transparent" />
-              <p className="text-xs text-stone-500">Mencari jurnal di repositori Semantic Scholar...</p>
+              <p className="text-xs text-stone-500">Mencari jurnal di repositori OpenAlex & Semantic Scholar...</p>
             </div>
           ) : papers.length === 0 && searched ? (
             <div className="py-12 text-center text-xs text-stone-500">
