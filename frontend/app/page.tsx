@@ -92,7 +92,7 @@ export default function DashboardPage() {
   return (
     <AppLayout
       title={`Halo, ${profile?.full_name?.split(" ")[0] || "Pelajar"} 👋`}
-      subtitle="Selamat datang di AI Study Companion. Siap melanjutkan pembelajaran hari ini?"
+      subtitle="Ringkasan dan perkembangan belajar aktif Anda hari ini"
     >
       <div className="space-y-6">
         {/* Top Hero Section: Clean 2-Column Balanced Grid */}
