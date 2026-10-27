@@ -65,8 +65,20 @@ export const api = {
   // Auth
   auth: {
     me: () => fetchWithAuth("/auth/me"),
+    login: (data: { email: string; password: string }) =>
+      fetchWithAuth("/auth/login", { method: "POST", body: JSON.stringify(data) }),
+    register: (data: { email: string; password: string; full_name: string }) =>
+      fetchWithAuth("/auth/register", { method: "POST", body: JSON.stringify(data) }),
+    googleAuth: (data: { credential?: string; email?: string; full_name?: string }) =>
+      fetchWithAuth("/auth/google", { method: "POST", body: JSON.stringify(data) }),
     updateProfile: (data: any) =>
       fetchWithAuth("/auth/me", { method: "PATCH", body: JSON.stringify(data) }),
+    logout: () => {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("study_token");
+        localStorage.removeItem("study_user");
+      }
+    },
   },
 
   // AI & Models

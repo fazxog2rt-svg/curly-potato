@@ -32,7 +32,7 @@ export function Sidebar({ isMobileOpen = false, onMobileClose, dueReviewsCount =
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems = [
-    { name: "Dashboard", href: "/", icon: LayoutDashboard },
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "AI Tutor", href: "/tutor", icon: Bot, isHighlight: true },
     { name: "Peta Konsep", href: "/knowledge-graph", icon: Network },
     { name: "My Materials", href: "/materials", icon: FileText },
