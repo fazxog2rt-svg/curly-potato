@@ -17,6 +17,7 @@ import {
   Clock,
   Target,
   ArrowRight,
+  Calendar,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { StudyGoalItem, StudyTaskItem } from "@/lib/types";
@@ -63,6 +64,26 @@ export default function PlannerPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const openGoogleCalendar = (title: string, durationMinutes: number = 30, details: string = "") => {
+    const start = new Date();
+    // round up to next 15 minutes
+    start.setMinutes(Math.ceil((start.getMinutes() + 5) / 15) * 15);
+    start.setSeconds(0);
+    start.setMilliseconds(0);
+    const end = new Date(start.getTime() + durationMinutes * 60000);
+
+    const formatGCalTime = (d: Date) => d.toISOString().replace(/-|:|\.\d\d\d/g, "");
+
+    const params = new URLSearchParams({
+      action: "TEMPLATE",
+      text: `[Belajar] ${title}`,
+      details: `${details}\n\nDisinkronkan otomatis dari EduApp Study Planner.`,
+      dates: `${formatGCalTime(start)}/${formatGCalTime(end)}`,
+    });
+
+    window.open(`https://calendar.google.com/calendar/render?${params.toString()}`, "_blank");
   };
 
   useEffect(() => {
@@ -280,6 +301,14 @@ export default function PlannerPage() {
                         style={{ width: `${goal.progress_percentage}%` }}
                       />
                     </div>
+                    <button
+                      onClick={() => openGoogleCalendar(goal.title, 60, goal.description || "")}
+                      className="text-[11px] font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5 pt-1 transition-colors"
+                      title="Sinkronkan target belajar ini ke Google Calendar"
+                    >
+                      <Calendar className="h-3 w-3" />
+                      <span>Jadwalkan di Google Calendar</span>
+                    </button>
                   </div>
                 </Card>
               ))}
@@ -340,7 +369,23 @@ export default function PlannerPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() =>
+                        openGoogleCalendar(
+                          task.title,
+                          task.duration_minutes,
+                          `Mata Pelajaran: ${task.subject || "Umum"}`
+                        )
+                      }
+                      title="1-Click Simpan Sesi Belajar ke Google Calendar"
+                      className="p-1.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors flex items-center gap-1 text-[11px]"
+                    >
+                      <Calendar className="h-3.5 w-3.5 text-indigo-500" />
+                      <span className="hidden sm:inline text-[10px] font-medium text-slate-500">
+                        Google Cal
+                      </span>
+                    </button>
                     <Badge variant="secondary" className="gap-1 text-[10px]">
                       <Clock className="h-3 w-3" /> {task.duration_minutes} mnt
                     </Badge>

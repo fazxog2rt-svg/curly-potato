@@ -10,9 +10,40 @@ export function PomodoroTimer() {
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
   const [sessionsCompleted, setSessionsCompleted] = useState(0);
+  const [soundPlaying, setSoundPlaying] = useState(false);
+  const [activeStream, setActiveStream] = useState("lofi");
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const FOCUS_TIME = 25 * 60;
   const BREAK_TIME = 5 * 60;
+
+  const STREAMS: Record<string, string> = {
+    lofi: "https://stream.zeno.fm/f3wvbbqmdg8uv",
+    rain: "https://actions.google.com/sounds/v1/weather/rain_heavy.ogg",
+    nature: "https://actions.google.com/sounds/v1/environments/forest_birds.ogg",
+    alpha: "https://actions.google.com/sounds/v1/science_fiction/deep_drone.ogg",
+  };
+
+  const handleSelectStream = (id: string) => {
+    setActiveStream(id);
+    if (audioRef.current) {
+      audioRef.current.src = STREAMS[id];
+      audioRef.current.play().catch(() => {});
+      setSoundPlaying(true);
+    }
+  };
+
+  const toggleSound = () => {
+    if (!audioRef.current) return;
+    if (soundPlaying) {
+      audioRef.current.pause();
+      setSoundPlaying(false);
+    } else {
+      audioRef.current.src = STREAMS[activeStream] || STREAMS.lofi;
+      audioRef.current.play().catch(() => {});
+      setSoundPlaying(true);
+    }
+  };
 
   useEffect(() => {
     let timer: any = null;
@@ -190,9 +221,53 @@ export function PomodoroTimer() {
             </button>
           </div>
 
+          {/* Hidden audio element for ambient streaming */}
+          <audio ref={audioRef} loop preload="none" />
+
+          {/* Ambient Focus Sounds Section */}
+          <div className="mt-4 pt-3 border-t border-stone-200/60 dark:border-stone-800 space-y-2">
+            <div className="flex items-center justify-between text-[11px] font-semibold text-stone-700 dark:text-stone-300">
+              <span className="flex items-center gap-1.5">
+                <Volume2 className="h-3.5 w-3.5 text-stone-500" />
+                <span>Audio Fokus Belajar:</span>
+              </span>
+              <button
+                onClick={toggleSound}
+                className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition ${
+                  soundPlaying
+                    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                    : "bg-stone-100 text-stone-500 dark:bg-stone-800"
+                }`}
+              >
+                {soundPlaying ? "Menyala" : "Mati"}
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-1 text-[10.5px]">
+              {[
+                { id: "lofi", label: "☕ Lofi Beats" },
+                { id: "rain", label: "🌧️ Suara Hujan" },
+                { id: "nature", label: "🌲 Hutan Alami" },
+                { id: "alpha", label: "🧠 Gelombang Fokus" },
+              ].map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => handleSelectStream(s.id)}
+                  className={`px-2 py-1.5 rounded-lg border text-left truncate transition ${
+                    activeStream === s.id && soundPlaying
+                      ? "border-stone-800 bg-stone-900 text-stone-50 dark:border-stone-200 dark:bg-stone-100 dark:text-stone-900 font-semibold shadow-xs"
+                      : "border-stone-200 bg-stone-50/70 text-stone-600 hover:bg-stone-100 dark:border-stone-800 dark:bg-stone-800/40 dark:text-stone-300"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Progress / Motivation */}
-          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-center text-[10.5px] text-slate-400">
-            Sesi selesai hari ini: <strong className="text-slate-700 dark:text-slate-200">{sessionsCompleted}</strong> sesi ({sessionsCompleted * 25} menit)
+          <div className="mt-3 pt-2 border-t border-stone-100 dark:border-stone-800 text-center text-[10.5px] text-stone-400">
+            Sesi selesai hari ini: <strong className="text-stone-700 dark:text-stone-200">{sessionsCompleted}</strong> sesi ({sessionsCompleted * 25} menit)
           </div>
         </div>
       )}

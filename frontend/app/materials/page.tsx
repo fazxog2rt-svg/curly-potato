@@ -21,10 +21,12 @@ import {
   AlertCircle,
   Send,
   Share2,
+  Video,
 } from "lucide-react";
 import { AudioPlayerButton } from "@/components/study/audio-player-button";
 import { MindMapModal } from "@/components/study/mindmap-modal";
 import { CheatSheetModal } from "@/components/study/cheatsheet-modal";
+import { YouTubeAnalyzerModal } from "@/components/study/youtube-analyzer-modal";
 import { api } from "@/lib/api";
 import { LearningMaterialItem } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
@@ -59,6 +61,7 @@ export default function MaterialsPage() {
   // Mind map & Cheatsheet modal state
   const [mindmapOpen, setMindmapOpen] = useState(false);
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false);
+  const [youtubeModalOpen, setYoutubeModalOpen] = useState(false);
   const [modalSeed, setModalSeed] = useState("");
   const [modalTitle, setModalTitle] = useState("");
 
@@ -201,9 +204,19 @@ export default function MaterialsPage() {
             </h2>
             <p className="text-xs text-slate-500">Mendukung file PDF, DOCX, TXT, dan Markdown hingga 25 MB.</p>
           </div>
-          <Button onClick={() => setUploadModalOpen(true)} className="gap-2">
-            <Upload className="h-4 w-4" /> Unggah Dokumen Baru
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setYoutubeModalOpen(true)}
+              className="gap-2 border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900/60 dark:text-red-400 dark:hover:bg-red-950/40"
+            >
+              <Video className="h-4 w-4 text-red-600" />
+              <span>Analisis Video YouTube</span>
+            </Button>
+            <Button onClick={() => setUploadModalOpen(true)} className="gap-2">
+              <Upload className="h-4 w-4" /> Unggah Dokumen Baru
+            </Button>
+          </div>
         </div>
 
         {/* Materials Grid / List */}
@@ -498,6 +511,12 @@ export default function MaterialsPage() {
         onClose={() => setCheatsheetOpen(false)}
         seedContent={modalSeed}
         subjectTitle={modalTitle}
+      />
+
+      {/* YouTube Video Summarizer & Quiz Modal */}
+      <YouTubeAnalyzerModal
+        isOpen={youtubeModalOpen}
+        onClose={() => setYoutubeModalOpen(false)}
       />
     </AppLayout>
   );

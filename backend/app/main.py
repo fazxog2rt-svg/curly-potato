@@ -23,6 +23,7 @@ from app.api.routes import (
     knowledge_graph,
     cat_exam,
     agent_copilot,
+    external_tools,
 )
 
 # Logging configuration
@@ -118,6 +119,7 @@ app.include_router(app_settings.router, prefix=settings.API_V1_STR)
 app.include_router(knowledge_graph.router, prefix=settings.API_V1_STR)
 app.include_router(cat_exam.router, prefix=settings.API_V1_STR)
 app.include_router(agent_copilot.router, prefix=settings.API_V1_STR)
+app.include_router(external_tools.router, prefix=settings.API_V1_STR)
 
 # ----------------------------------------------------------------------
 # Mount and Serve Unified Next.js Frontend (Single-Host Deployment)

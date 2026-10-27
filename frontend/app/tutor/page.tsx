@@ -23,6 +23,8 @@ import {
   SlidersHorizontal,
   ChevronDown,
   Share2,
+  Camera,
+  GraduationCap,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -32,6 +34,9 @@ import { AudioPlayerButton } from "@/components/study/audio-player-button";
 import { MindMapModal } from "@/components/study/mindmap-modal";
 import { CheatSheetModal } from "@/components/study/cheatsheet-modal";
 import { AIMotivationCard } from "@/components/study/ai-motivation-card";
+import { CodeRunner } from "@/components/study/code-runner";
+import { SnapSolveModal } from "@/components/study/snap-solve-modal";
+import { AcademicPapersModal } from "@/components/study/academic-papers-modal";
 import { api } from "@/lib/api";
 import { ConversationItem, LearningMaterialItem, MessageItem, ModelInfo } from "@/lib/types";
 
@@ -60,6 +65,8 @@ export default function TutorPage() {
   // New Feature Modals (Mind Map & Cheatsheet)
   const [mindmapOpen, setMindmapOpen] = useState(false);
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false);
+  const [snapModalOpen, setSnapModalOpen] = useState(false);
+  const [papersModalOpen, setPapersModalOpen] = useState(false);
   const [activeModalSeed, setActiveModalSeed] = useState("");
   const [activeModalTopic, setActiveModalTopic] = useState("");
 
@@ -496,11 +503,10 @@ export default function TutorPage() {
                                   {children}
                                 </code>
                               ) : (
-                                <div className="relative my-3 rounded-xl overflow-hidden border border-slate-800 bg-slate-900 shadow-xs">
-                                  <pre className="p-3.5 text-slate-100 text-xs font-mono overflow-x-auto leading-relaxed">
-                                    <code>{children}</code>
-                                  </pre>
-                                </div>
+                                <CodeRunner
+                                  code={String(children).replace(/\n$/, "")}
+                                  language={className ? className.replace("language-", "") : "python"}
+                                />
                               );
                             },
                             hr: () => (
@@ -623,11 +629,29 @@ export default function TutorPage() {
             className="border-t border-slate-200/80 bg-white p-3 dark:border-slate-800 dark:bg-slate-900"
           >
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setSnapModalOpen(true)}
+                title="Snap & Solve - Bedah Soal dari Foto / Kamera"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-stone-200/80 bg-stone-50 hover:bg-stone-100 text-stone-600 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 transition shadow-2xs"
+              >
+                <Camera className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPapersModalOpen(true)}
+                title="Cari Jurnal Ilmiah (Semantic Scholar)"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-stone-200/80 bg-stone-50 hover:bg-stone-100 text-stone-600 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 transition shadow-2xs"
+              >
+                <GraduationCap className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              </button>
+
               <input
                 type="text"
                 value={inputPrompt}
                 onChange={(e) => setInputPrompt(e.target.value)}
-                placeholder="Ajukan pertanyaan materi atau konsep pelajaran..."
+                placeholder="Ajukan pertanyaan materi, atau gunakan tombol kamera/jurnal..."
                 className="flex-1 rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-100"
                 disabled={loading}
               />
@@ -697,6 +721,26 @@ export default function TutorPage() {
         seedContent={activeModalSeed}
         subjectTitle={activeModalTopic}
         model={selectedModel}
+      />
+
+      {/* Snap & Solve Multimodal Vision Modal */}
+      <SnapSolveModal
+        isOpen={snapModalOpen}
+        onClose={() => setSnapModalOpen(false)}
+        onAskTutor={(solutionText) => {
+          setInputPrompt(`Tolong jelaskan lebih lanjut mengenai penyelesaian soal ini:\n\n${solutionText}`);
+        }}
+      />
+
+      {/* Academic Papers Search Modal (Semantic Scholar) */}
+      <AcademicPapersModal
+        isOpen={papersModalOpen}
+        onClose={() => setPapersModalOpen(false)}
+        onImportToNotes={(paper) => {
+          openSaveNoteModal(
+            `## ${paper.title}\n\n**Penulis:** ${paper.authors?.join(", ")} (${paper.year})\n**Sitasi APA:** ${paper.apa_citation}\n**Link:** ${paper.url}\n\n### Abstrak\n${paper.abstract}`
+          );
+        }}
       />
     </AppLayout>
   );

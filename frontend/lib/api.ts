@@ -251,4 +251,27 @@ export const api = {
         body: JSON.stringify({ mission_title, actionable_plan, generated_flashcards }),
       }),
   },
+
+  // External Academic & Learning API Tools
+  tools: {
+    searchPapers: (query: string, limit = 5) =>
+      fetchWithAuth(`/tools/academic/search?query=${encodeURIComponent(query)}&limit=${limit}`),
+    getWikipedia: (term: string, lang = "id") =>
+      fetchWithAuth(`/tools/wikipedia/summary?term=${encodeURIComponent(term)}&lang=${lang}`),
+    executeCode: (language: string, code: string, stdin = "") =>
+      fetchWithAuth("/tools/code/execute", {
+        method: "POST",
+        body: JSON.stringify({ language, code, stdin }),
+      }),
+    analyzeYouTube: (url: string) =>
+      fetchWithAuth("/tools/youtube/analyze", {
+        method: "POST",
+        body: JSON.stringify({ url }),
+      }),
+    solveVision: (image_base64: string, prompt?: string) =>
+      fetchWithAuth("/tools/vision/solve", {
+        method: "POST",
+        body: JSON.stringify({ image_base64, prompt }),
+      }),
+  },
 };
