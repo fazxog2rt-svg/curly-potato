@@ -247,8 +247,8 @@ export default function TutorPage() {
 
   return (
     <AppLayout
-      title="AI Tutor Pembelajaran"
-      subtitle="Belajar materi apapun secara adaptif, interaktif, dan mendalam"
+      title="Tutor Belajar"
+      subtitle="Diskusikan konsep pelajaran secara interaktif dan bertahap"
     >
       <div className="flex h-[calc(100vh-10rem)] gap-4 overflow-hidden">
         {/* Left Side: Conversation History Drawer */}
@@ -361,15 +361,15 @@ export default function TutorPage() {
           <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
             {messages.length === 0 ? (
               <div className="flex min-h-full flex-col items-center justify-center text-center py-6 space-y-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400 shadow-xs">
-                  <Sparkles className="h-6 w-6" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-stone-100 text-stone-800 dark:bg-stone-800 dark:text-stone-200 shadow-xs">
+                  <BookOpen className="h-5 w-5" />
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
-                    AI Tutor Pembelajaran Siap Membantu
+                    Ruang Diskusi & Pemahaman Materi
                   </h3>
                   <p className="mt-1 max-w-md text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Ajukan materi apapun yang ingin Anda pahami. Anda dapat memilih tingkat kesulitan dan gaya penjelasan di bilah atas.
+                    Ajukan materi apapun yang ingin Anda pahami secara bertahap dan terarah.
                   </p>
                 </div>
 
@@ -632,7 +632,7 @@ export default function TutorPage() {
                   <span className="h-2 w-2 rounded-full bg-indigo-600 animate-bounce" />
                   <span className="h-2 w-2 rounded-full bg-indigo-600 animate-bounce [animation-delay:0.2s]" />
                   <span className="h-2 w-2 rounded-full bg-indigo-600 animate-bounce [animation-delay:0.4s]" />
-                  <span className="ml-1">Tutor sedang menyusun penjelasan...</span>
+                  <span className="ml-1">Menyiapkan penjelasan materi...</span>
                 </div>
               </div>
             )}

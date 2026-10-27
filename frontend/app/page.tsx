@@ -51,14 +51,14 @@ export default function LandingPage() {
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-2.5">
             <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-stone-900 text-stone-50 font-bold shadow-xs dark:bg-stone-100 dark:text-stone-900">
-              <Sparkles className="h-5 w-5" />
+              <BookOpen className="h-4 w-4" />
             </div>
             <div>
               <span className="font-extrabold text-sm sm:text-base tracking-tight text-stone-900 dark:text-stone-100">
-                AI Study Companion
+                EduApp
               </span>
               <span className="hidden sm:inline-block ml-2 rounded-full border border-stone-200 bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-600 dark:border-stone-800 dark:bg-stone-800 dark:text-stone-300">
-                v2.0
+                Ruang Belajar
               </span>
             </div>
           </Link>
@@ -114,8 +114,8 @@ export default function LandingPage() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center space-y-6">
           {/* Badge Pill */}
           <div className="inline-flex items-center gap-2 rounded-full border border-stone-200/90 bg-stone-100/80 px-3.5 py-1 text-xs font-semibold text-stone-700 shadow-2xs dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Didukung Bayesian Knowledge Tracing & Algoritma SM-2</span>
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500" />
+            <span>Fokus Pemahaman Konseptual & Retensi Jangka Panjang</span>
           </div>
 
           {/* Main Headline */}
@@ -128,9 +128,9 @@ export default function LandingPage() {
 
           {/* Subtitle */}
           <p className="mx-auto max-w-2xl text-sm sm:text-base text-stone-600 dark:text-stone-300 leading-relaxed font-normal">
-            Platform AI Tutor pribadi yang memandu pemahamanmu langkah demi langkah dengan metode Sokrates,
-            mempertahankan daya ingat lewat <span className="font-semibold text-stone-800 dark:text-stone-200">Spaced Repetition</span>,
-            serta melatih ketajamanmu menghadapi ujian akademik dan CAT.
+            Ruang belajar mandiri yang memandu pemahaman materi langkah demi langkah,
+            memperkuat daya ingat lewat <span className="font-semibold text-stone-800 dark:text-stone-200">Spaced Repetition</span>,
+            serta melatih kesiapan menghadapi ujian akademik dengan evaluasi terukur.
           </p>
 
           {/* CTA Buttons */}

@@ -159,14 +159,11 @@ export function PodcastModal({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
-                  AI Podcast Studio (2-Host Audio Overview)
+                  Audio Diskusi (2 Host)
                 </h3>
-                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-950/70 dark:text-amber-300">
-                  Edge-TTS Neural
-                </span>
               </div>
               <p className="text-xs text-stone-500 dark:text-stone-400">
-                Ubah topik dan catatan belajar menjadi percakapan podcast dua narasumber (Rian & Siti) secara instan.
+                Ubah topik dan catatan belajar menjadi obrolan santai dua narasumber (Rian & Siti).
               </p>
             </div>
           </div>
@@ -186,7 +183,7 @@ export function PodcastModal({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="md:col-span-2 space-y-1.5">
                 <label className="text-xs font-semibold text-stone-700 dark:text-stone-300">
-                  Topik Podcast
+                  Topik Pembahasan
                 </label>
                 <input
                   type="text"
@@ -232,24 +229,24 @@ export function PodcastModal({
 
             <div className="flex items-center justify-between pt-1">
               <div className="flex items-center gap-2 text-[11px] text-stone-500">
-                <Radio className="h-3.5 w-3.5 text-amber-600 animate-pulse" />
-                <span>Format 2-Host: Host Penanya + Host Ekspert</span>
+                <Radio className="h-3.5 w-3.5 text-amber-600" />
+                <span>Format: Obrolan santai 2 orang</span>
               </div>
 
               <Button
                 type="submit"
                 disabled={!topic.trim() || loading}
-                className="gap-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-medium text-xs px-5 shadow-xs"
+                className="gap-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-medium text-xs px-5 shadow-xs dark:bg-stone-100 dark:text-stone-900"
               >
                 {loading ? (
                   <>
                     <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    <span>Menyusun Naskah & Merender Audio...</span>
+                    <span>Menyiapkan Audio Diskusi...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-3.5 w-3.5" />
-                    <span>Rekam Episode Podcast</span>
+                    <Play className="h-3.5 w-3.5" />
+                    <span>Mulai Diskusi Audio</span>
                   </>
                 )}
               </Button>
@@ -274,10 +271,10 @@ export function PodcastModal({
                 <span className="w-1.5 h-7 bg-amber-600 rounded-full animate-bounce [animation-delay:0.5s]" />
               </div>
               <p className="font-serif text-sm font-semibold text-stone-800 dark:text-stone-200">
-                Studio AI sedang menyusun naskah dan merender suara neural 2 host...
+                Menyusun obrolan santai dan menyiapkan audio...
               </p>
               <p className="text-xs text-stone-500">
-                Audio disintesis secara natural menggunakan Edge-TTS Engine.
+                Materi dikonversi ke format diskusi santai dua arah.
               </p>
             </div>
           )}

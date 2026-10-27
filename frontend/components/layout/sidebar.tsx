@@ -33,19 +33,19 @@ export function Sidebar({ isMobileOpen = false, onMobileClose, dueReviewsCount =
 
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "AI Tutor", href: "/tutor", icon: Bot, isHighlight: true },
+    { name: "Tutor Belajar", href: "/tutor", icon: Bot },
     { name: "Peta Konsep", href: "/knowledge-graph", icon: Network },
-    { name: "My Materials", href: "/materials", icon: FileText },
+    { name: "Materi Belajar", href: "/materials", icon: FileText },
     { name: "Catatan", href: "/notes", icon: BookOpen },
-    { name: "Quiz Center", href: "/quiz", icon: Award },
+    { name: "Latihan & Kuis", href: "/quiz", icon: Award },
     {
-      name: "Smart Review",
+      name: "Review Berkala",
       href: "/review",
       icon: RotateCcw,
       badge: dueReviewsCount > 0 ? dueReviewsCount : undefined,
     },
-    { name: "Study Planner", href: "/planner", icon: CalendarCheck },
-    { name: "Analytics", href: "/analytics", icon: BarChart3 },
+    { name: "Rencana Belajar", href: "/planner", icon: CalendarCheck },
+    { name: "Progres Belajar", href: "/analytics", icon: BarChart3 },
     { name: "Pengaturan", href: "/settings", icon: Settings },
   ];
 
@@ -75,15 +75,15 @@ export function Sidebar({ isMobileOpen = false, onMobileClose, dueReviewsCount =
             className={cn("flex items-center gap-2.5 transition-opacity hover:opacity-90", collapsed && "justify-center w-full")}
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-stone-900 text-stone-50 dark:bg-stone-100 dark:text-stone-900 shadow-xs">
-              <BrainCircuit className="h-4 w-4" />
+              <BookOpen className="h-4 w-4" />
             </div>
             {!collapsed && (
               <div className="flex flex-col">
                 <span className="text-[13px] font-bold tracking-tight text-stone-900 dark:text-stone-100">
-                  Study Companion
+                  EduApp
                 </span>
                 <span className="text-[10px] font-medium text-stone-500 dark:text-stone-400">
-                  GutsAI Intelligent Core
+                  Ruang Belajar Digital
                 </span>
               </div>
             )}
@@ -137,20 +137,6 @@ export function Sidebar({ isMobileOpen = false, onMobileClose, dueReviewsCount =
                     {item.badge}
                   </span>
                 )}
-
-                {item.isHighlight && !collapsed && (
-                  <span
-                    className={cn(
-                      "ml-auto flex items-center gap-0.5 text-[9.5px] font-semibold px-1.5 py-0.5 rounded",
-                      isActive
-                        ? "bg-stone-800 text-stone-300 dark:bg-stone-200 dark:text-stone-800"
-                        : "bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400"
-                    )}
-                  >
-                    <Sparkles className="h-2.5 w-2.5" />
-                    AI
-                  </span>
-                )}
               </a>
             );
           })}
@@ -162,11 +148,10 @@ export function Sidebar({ isMobileOpen = false, onMobileClose, dueReviewsCount =
             <div className="rounded-xl bg-stone-100/80 p-2.5 dark:bg-stone-900/60 border border-stone-200/60 dark:border-stone-800 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
                 <span className="text-[11.5px] font-medium text-stone-700 dark:text-stone-300">
-                  GutsAI Ready
+                  Sistem Aktif
                 </span>
               </div>
               <span className="text-[10px] font-mono text-stone-400">v1.2</span>

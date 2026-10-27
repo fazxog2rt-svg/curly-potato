@@ -63,7 +63,7 @@ export function Header({ onMobileMenuToggle, title, subtitle }: HeaderProps) {
           {/* Page Title & Breadcrumb */}
           <div className="min-w-0 overflow-hidden">
             <h1 className="text-sm md:text-base font-bold text-stone-900 dark:text-stone-100 tracking-tight truncate">
-              {title || "AI Study Companion"}
+              {title || "Ruang Belajar"}
             </h1>
             {subtitle && (
               <p className="text-[11.5px] text-stone-500 dark:text-stone-400 hidden sm:block truncate max-w-sm md:max-w-md lg:max-w-xl">
@@ -75,24 +75,24 @@ export function Header({ onMobileMenuToggle, title, subtitle }: HeaderProps) {
 
         {/* Right Controls */}
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 md:gap-2.5">
-          {/* Autonomous Co-Pilot Trigger Button */}
+          {/* Autonomous Study Assistant Trigger Button */}
           <button
             onClick={() => setCopilotOpen(true)}
             className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-stone-200/80 bg-white/70 px-3 py-1.5 text-[11.5px] font-semibold text-stone-700 hover:bg-stone-100/80 transition dark:border-stone-800 dark:bg-stone-900/60 dark:text-stone-300 dark:hover:bg-stone-800"
-            title="Buka Autonomous Study Co-Pilot"
+            title="Buka Asisten Rencana Belajar"
           >
             <Bot className="h-3.5 w-3.5 text-stone-500" />
-            <span>AI Co-Pilot</span>
+            <span>Asisten Belajar</span>
           </button>
 
-          {/* Voice Agent Call Trigger Button */}
+          {/* Voice Discussion Call Trigger Button */}
           <button
             onClick={() => setVoiceOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200/70 bg-indigo-50/70 px-3 py-1.5 text-[11.5px] font-semibold text-indigo-700 hover:bg-indigo-100/70 transition dark:border-indigo-900/60 dark:bg-indigo-950/40 dark:text-indigo-300"
-            title="Mulai Panggilan Telepon Suara dengan AI Tutor"
+            className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-[11.5px] font-semibold text-stone-700 hover:bg-stone-100 transition dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300"
+            title="Diskusi Suara Langsung"
           >
-            <Phone className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 animate-pulse" />
-            <span className="hidden lg:inline">Telepon AI</span>
+            <Phone className="h-3.5 w-3.5 text-stone-500" />
+            <span className="hidden lg:inline">Tanya Suara</span>
           </button>
 
           {/* Pomodoro Focus Timer */}

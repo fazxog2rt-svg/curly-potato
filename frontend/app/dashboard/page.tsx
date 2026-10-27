@@ -122,26 +122,26 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Embedded AI Recommendation */}
+              {/* Focused Study Suggestion */}
               <div className="mt-4 rounded-2xl border border-stone-200/80 bg-stone-50/70 p-3.5 dark:border-stone-800 dark:bg-stone-900/50">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400 mt-0.5">
-                    <Sparkles className="h-4 w-4" />
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-300 mt-0.5">
+                    <BookOpen className="h-3.5 w-3.5" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-xs font-semibold text-stone-900 dark:text-stone-200">
-                        Rekomendasi AI Hari Ini:
+                        Fokus Belajar Hari Ini:
                       </span>
                       <a
                         href="/review"
-                        className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 inline-flex items-center gap-1"
+                        className="text-xs font-semibold text-stone-900 hover:underline dark:text-stone-100 inline-flex items-center gap-1"
                       >
                         Review Sekarang <ArrowRight className="h-3 w-3" />
                       </a>
                     </div>
                     <p className="mt-1 text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
-                      {analytics?.recommendations?.[0] || "Coba kerjakan kuis evaluasi berkala untuk menguji pemahaman materi terkini."}
+                      {analytics?.recommendations?.[0] || "Coba kerjakan latihan berkala untuk menguji pemahaman materi terkini."}
                     </p>
                   </div>
                 </div>
@@ -152,17 +152,17 @@ export default function DashboardPage() {
             <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-stone-100 dark:border-stone-800/80">
               <a href="/tutor">
                 <Button size="sm" className="h-8 rounded-xl text-xs gap-1.5 bg-stone-900 text-stone-50 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200">
-                  <Bot className="h-3.5 w-3.5" /> Tanya AI Tutor
+                  <BookOpen className="h-3.5 w-3.5" /> Diskusi Materi
                 </Button>
               </a>
               <a href="/review">
                 <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs gap-1.5 border-stone-200 bg-white text-stone-700 hover:bg-stone-100 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300">
-                  <RotateCcw className="h-3.5 w-3.5" /> Flashcard Review
+                  <RotateCcw className="h-3.5 w-3.5" /> Review Kartu
                 </Button>
               </a>
               <a href="/materials">
                 <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs gap-1.5 border-stone-200 bg-white text-stone-700 hover:bg-stone-100 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300">
-                  <BookOpen className="h-3.5 w-3.5" /> Materi Kuliah
+                  <FileText className="h-3.5 w-3.5" /> Dokumen Materi
                 </Button>
               </a>
             </div>

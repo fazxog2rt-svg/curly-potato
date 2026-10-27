@@ -162,7 +162,7 @@ export function AIMotivationCard({ currentSubject, className = "", compact = fal
         <div className="space-y-2 flex-1 flex flex-col justify-center py-1">
           <div className="flex items-start gap-2.5">
             <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-stone-200/80 text-stone-700 dark:bg-stone-800 dark:text-stone-300 mt-0.5">
-              <Sparkles className="h-3.5 w-3.5" />
+              <Quote className="h-3.5 w-3.5" />
             </div>
             <div className="space-y-1">
               <p className="text-sm font-medium text-stone-900 dark:text-stone-100 leading-relaxed italic">

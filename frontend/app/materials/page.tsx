@@ -220,7 +220,7 @@ export default function MaterialsPage() {
               className="gap-2 border-amber-300 text-amber-700 hover:bg-amber-50 dark:border-amber-900/60 dark:text-amber-400 dark:hover:bg-amber-950/40"
             >
               <Headphones className="h-4 w-4 text-amber-600" />
-              <span>AI Podcast Studio (2-Host)</span>
+              <span>Audio Diskusi (2 Host)</span>
             </Button>
             <Button
               variant="outline"

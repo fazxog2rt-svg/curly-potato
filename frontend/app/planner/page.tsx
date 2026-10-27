@@ -221,8 +221,8 @@ export default function PlannerPage() {
 
   return (
     <AppLayout
-      title="Study Planner & Target Belajar"
-      subtitle="Bagi target belajar besar menjadi langkah harian yang realistis dengan bimbingan AI."
+      title="Rencana & Target Belajar"
+      subtitle="Bagi target belajar besar menjadi langkah harian yang terarah dan realistis."
     >
       <div className="space-y-6">
         {/* Top Controls */}
@@ -243,11 +243,11 @@ export default function PlannerPage() {
                 setAiModalOpen(true);
               }}
               variant="outline"
-              className="gap-2 border-indigo-200 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-900 dark:text-indigo-400"
+              className="gap-2 border-stone-200 text-stone-700 hover:bg-stone-50 dark:border-stone-800 dark:text-stone-300 dark:hover:bg-stone-900"
             >
-              <Sparkles className="h-4 w-4" /> Saran Rencana AI
+              <CalendarCheck className="h-4 w-4 text-stone-500" /> Rekomendasi Jadwal
             </Button>
-            <Button onClick={() => setGoalModalOpen(true)} className="gap-2">
+            <Button onClick={() => setGoalModalOpen(true)} className="gap-2 bg-stone-900 text-stone-50 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900">
               <Plus className="h-4 w-4" /> Buat Target Baru
             </Button>
           </div>

@@ -433,28 +433,30 @@ async def generate_educational_podcast(req: PodcastGenerateRequest):
     if not req.topic.strip():
         raise HTTPException(status_code=400, detail="Topik podcast wajib diisi.")
 
-    # 1. Generate multi-host script with LLM
-    system_prompt = """Kamu adalah produser podcast edukasi kelas dunia (mirip fitur Audio Overview pada Google NotebookLM).
-Tugasmu adalah menyusun naskah obrolan podcast antara 2 host:
-- Rian (Host Pria): Energik, ramah, kritis, sering bertanya hal praktis dan memakai perumpamaan kehidupan sehari-hari.
-- Siti (Host Wanita / Ekspert): Cerdas, santai, berwawasan luas, menjelaskan materi dengan runut, hangat, dan mudah dimengerti.
+    # 1. Generate multi-host script with LLM - Natural & Human conversation
+    system_prompt = """Kamu adalah dua sahabat cerdas yang sedang ngobrol santai di kafe tentang topik pelajaran.
+Karakter:
+- Rian: Penasaran, santai, ceplas-ceplos, suka bertanya pakai perumpamaan sehari-hari yang relatable.
+- Siti: Santai, berwawasan luas, menjelaskan inti materi dengan bahasa manusia biasa (bukan membaca textbook/makalah).
 
-Aturan naskah:
-- Jadikan percakapan mengalir santai (ada sambutan intro hangat, diskusi inti, dan kesimpulan singkat).
-- Gunakan bahasa Indonesia percakapan yang cerdas dan bersahabat (tidak kaku seperti membaca buku).
-- Jumlah giliran bicara: 6 sampai 8 giliran (masing-masing 2-3 kalimat padat).
+Aturan Obrolan (PENTING - HINDARI KESAN ROBOTIK/AI):
+- JANGAN PERNAH gunakan salam pembuka klise seperti "Halo pemirsa/teman-teman", "Selamat datang di episode podcast", atau "Terima kasih sudah mendengarkan".
+- Mulai obrolan langsung secara natural seolah-olah percakapan sudah berjalan (misal: "Eh Siti, kemarin aku sempat mikir...", "Jujur ya, aku masih suka bingung bedanya...", "Nah, kalau dipikir-pikir...").
+- Gunakan bahasa Indonesia santai tapi berisi (pakai kata sambung wajar: 'gini lho', 'sebenarnya', 'kebayang gak', 'nah itu dia', 'maksudnya?').
+- Ada interaksi saling menyela atau menanggapi secara hangat dan manusiawi.
+- Total 6 sampai 8 giliran bicara pendek dan padat (1-2 kalimat per giliran).
 - Format respon HARUS berupa JSON murni tanpa markdown wrapper:
 {
-  "title": "Judul Episode Podcast Menarik",
-  "summary": "Ringkasan konsep utama dalam 1-2 kalimat.",
+  "title": "Judul Obrolan Santai",
+  "summary": "Inti yang dibahas dalam 1 kalimat lugas.",
   "dialogue": [
     {
       "speaker": "Rian",
-      "text": "Halo semuanya! Di episode kali ini kita bakal ngobrolin topik yang seru banget bareng Siti..."
+      "text": "Eh Siti, kemarin aku kepikiran, kenapa sih konsep ini sering banget dibahas orang?"
     },
     {
       "speaker": "Siti",
-      "text": "Halo Rian! Benar sekali, topik ini sering banget bikin penasaran..."
+      "text": "Gini Rian, bayangin aja kalau kamu lagi belanja tapi..."
     }
   ]
 }"""
